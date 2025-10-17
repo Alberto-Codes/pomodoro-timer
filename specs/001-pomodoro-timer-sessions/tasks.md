@@ -77,11 +77,12 @@ Single project structure (per plan.md):
 
 - [ ] T023 [P] [US1] Create TimerSession class in `src/pomodoro_timer/models/session.py` with __init__, state, session_type, remaining_seconds, start_time, end_time attributes (all with type hints)
 - [ ] T024 [P] [US1] Add TimerSession.start_work() method in `src/pomodoro_timer/models/session.py` with state validation and transition logic
+- [ ] T024a [P] [US1] Add active session check to start_work() and start_break() methods in `src/pomodoro_timer/models/session.py` that raises SessionAlreadyActive when state is RUNNING or PAUSED (implements FR-010)
 - [ ] T025 [P] [US1] Add TimerSession.tick() method in `src/pomodoro_timer/models/session.py` to update remaining time and auto-transition to COMPLETED
-- [ ] T026 [P] [US1] Add TimerSession.formatted_time property in `src/pomodoro_timer/models/session.py` returning MM:SS format
+- [ ] T026 [P] [US1] Add TimerSession.formatted_time property in `src/pomodoro_timer/models/session.py` returning MM:SS format (note: must handle COMPLETED state display showing 00:00 per FR-015)
 - [ ] T027 [P] [US1] Add TimerSession.is_active property in `src/pomodoro_timer/models/session.py` checking if RUNNING or PAUSED
 - [ ] T028 [US1] Run unit tests for session model: `uv run pytest tests/unit/test_session.py -v`
-- [ ] T029 [P] [US1] Create TimerEngine class in `src/pomodoro_timer/timer/engine.py` with async countdown loop using asyncio.sleep(0.1) and time.time() for accuracy
+- [ ] T029 [P] [US1] Create TimerEngine class in `src/pomodoro_timer/timer/engine.py` with async countdown loop using asyncio.sleep(0.1) for 10Hz refresh (exceeds SC-004 requirement of 1Hz for smoother UX) and time.time() for accuracy
 - [ ] T030 [P] [US1] Implement TimerEngine.start_work() async method in `src/pomodoro_timer/timer/engine.py` that starts session and runs countdown loop
 - [ ] T031 [P] [US1] Write unit tests for TimerEngine in `tests/unit/test_engine.py` covering start_work and countdown loop with mocked time
 - [ ] T032 [US1] Run engine tests: `uv run pytest tests/unit/test_engine.py -v`
@@ -89,7 +90,7 @@ Single project structure (per plan.md):
 - [ ] T034 [P] [US1] Create format_time() utility in `src/pomodoro_timer/cli/display.py` to convert seconds to MM:SS string with zero-padding
 - [ ] T035 [P] [US1] Write unit tests for display functions in `tests/unit/test_display.py` covering format_time() with various inputs
 - [ ] T036 [US1] Run display tests: `uv run pytest tests/unit/test_display.py -v`
-- [ ] T037 [P] [US1] Create notify_completion() function in `src/pomodoro_timer/timer/notifications.py` that prints visual message and outputs '\a' for terminal bell
+- [ ] T037 [P] [US1] Create notify_completion() function in `src/pomodoro_timer/timer/notifications.py` that prints visual message and outputs '\a' for terminal bell (best-effort, no error if terminal doesn't support audio)
 - [ ] T038 [P] [US1] Write unit tests for notifications in `tests/unit/test_notifications.py` using mocked stdout/stderr
 - [ ] T039 [US1] Run notification tests: `uv run pytest tests/unit/test_notifications.py -v`
 - [ ] T040 [P] [US1] Create start command handler in `src/pomodoro_timer/cli/commands.py` using argparse for 'start work' command
@@ -226,7 +227,7 @@ Single project structure (per plan.md):
 - [ ] T114 [P] Handle KeyboardInterrupt (Ctrl+C) gracefully in timer loop in `src/pomodoro_timer/timer/engine.py` with exit code 3
 - [ ] T115 [P] Add comprehensive error messages for all InvalidStateTransition cases in `src/pomodoro_timer/models/session.py`
 - [ ] T116 [P] Add edge case tests in `tests/unit/test_session.py` for all invalid state transitions from data-model.md
-- [ ] T117 [P] Add edge case tests in `tests/integration/test_timer_workflows.py` for edge cases from spec.md (completed state persistence, concurrent session prevention, etc.)
+- [ ] T117 [P] Add edge case tests in `tests/integration/test_timer_workflows.py` for edge cases from spec.md (completed state persistence, concurrent session prevention, timer drift with ±5 second acceptable threshold, audio fallback handling, etc.)
 - [ ] T118 Run full test suite with coverage: `uv run pytest --cov=src --cov-report=term-missing --cov-report=html`
 - [ ] T119 Verify coverage is ≥90% for all modules
 - [ ] T120 Run type checking on entire codebase: `uv run ty check`
@@ -239,9 +240,10 @@ Single project structure (per plan.md):
 - [ ] T127 Manual end-to-end validation following quickstart.md validation steps for all user stories
 - [ ] T128 Performance test: Verify timer accuracy over full 25-minute session (use fast-forwarded time in test)
 - [ ] T129 Performance test: Verify all commands respond within 500ms (SC-007)
-- [ ] T130 Performance test: Verify notifications appear within 2 seconds of completion (SC-003)
+- [ ] T130 Performance test: Verify notifications appear within 2 seconds (≤2.0s) of completion (SC-003)
 - [ ] T131 Final constitution compliance check: Verify all 5 principles maintained
 - [ ] T132 Create demo video or screenshots showing all 4 user stories in action
+- [ ] T133 Manual validation of SC-005 metric: Track first-time user success rate through manual user testing (target: 95% successful work-break cycle completion)
 
 **Checkpoint**: Feature complete, tested, documented, and ready for PR
 
@@ -382,9 +384,9 @@ Validate these during Phase 7:
 
 - [ ] **SC-001**: 25-minute work session accurate within 1 second
 - [ ] **SC-002**: 5-minute break session accurate within 1 second
-- [ ] **SC-003**: Notifications appear within 2 seconds of timer reaching zero
+- [ ] **SC-003**: Notifications appear within 2 seconds (≤2.0s) of timer reaching zero
 - [ ] **SC-004**: Display refreshes at least 1 Hz (once per second)
-- [ ] **SC-005**: 95% of users complete first work-break cycle without errors (test with manual validation)
+- [ ] **SC-005**: 95% of users complete first work-break cycle without errors (Manual Validation Metric via T133)
 - [ ] **SC-006**: Pause/resume preserves time within 1 second accuracy
 - [ ] **SC-007**: All commands respond within 500 milliseconds
 
@@ -392,14 +394,14 @@ Validate these during Phase 7:
 
 ## Task Summary
 
-**Total Tasks**: 132
+**Total Tasks**: 135
 - **Setup**: 6 tasks (T001-T006)
 - **Foundational**: 6 tasks (T007-T012)
-- **User Story 1 (P1)**: 39 tasks (T013-T051) - MVP
+- **User Story 1 (P1)**: 41 tasks (T013-T051, T024a, T026 updated) - MVP
 - **User Story 2 (P2)**: 19 tasks (T052-T070)
 - **User Story 3 (P3)**: 24 tasks (T071-T094)
 - **User Story 4 (P3)**: 16 tasks (T095-T110)
-- **Polish**: 22 tasks (T111-T132)
+- **Polish**: 25 tasks (T111-T133, T117 updated, T130 updated, T133 added)
 
 **Parallel Opportunities**: 58 tasks marked [P] can run in parallel within their phase
 

@@ -103,10 +103,10 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 ### Edge Cases
 
 - Timer remains in "completed" state displaying 00:00 when session ends until user starts next session or cancels
-- System prevents starting a work session while a break is already running (and vice versa) per FR-011
+- System prevents starting a work session while a break is already running (and vice versa) per FR-010
 - If application is closed or loses focus during an active session, the session state is lost and timer resets to idle on restart
-- Timer countdown is based on elapsed real-time; system time changes (daylight saving, manual adjustment) may cause timer drift but will not pause or reset the active session
-- Multiple simultaneous timers are prevented by FR-011; attempting to start a new session while one is active results in an error or is ignored
+- Timer countdown is based on elapsed real-time; system time changes (daylight saving, manual adjustment) may cause timer drift but will not pause or reset the active session (acceptable drift threshold: ±5 seconds over 25 minutes)
+- Multiple simultaneous timers are prevented by FR-010; attempting to start a new session while one is active results in an error or is ignored
 
 ## Requirements *(mandatory)*
 
@@ -114,10 +114,10 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 
 - **FR-001**: System MUST support 25-minute work sessions that count down to zero
 - **FR-002**: System MUST support 5-minute break sessions that count down to zero
-- **FR-003**: System MUST display remaining time in minutes and seconds format (MM:SS)
-- **FR-004**: System MUST notify users when a session completes (work or break) using both visual terminal output and audio signal (bell/beep)
+- **FR-003**: System MUST display remaining time in terminal output using MM:SS format (minutes and seconds) with in-place updates
+- **FR-004**: System MUST notify users when a session completes (work or break) using both visual terminal output and audio signal (bell/beep, best-effort if terminal supports \a)
 - **FR-005**: Users MUST be able to start a work session from idle state
-- **FR-006**: Users MUST be able to start a break session from idle state or after a work session completes
+- **FR-006**: Users MUST be able to start a break session from idle state or after any completed session (work or break)
 - **FR-007**: Users MUST be able to pause an active timer (work or break)
 - **FR-008**: Users MUST be able to resume a paused timer
 - **FR-009**: Users MUST be able to cancel an active or paused timer
@@ -125,10 +125,12 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 - **FR-011**: System MUST display current session type (work or break)
 - **FR-012**: System MUST display current session state (idle, running, paused, completed)
 - **FR-013**: System MUST update the time display at least once per second during active sessions
-- **FR-014**: Notifications MUST be distinguishable between work and break completions
-- **FR-015**: When a session completes, the timer MUST remain in "completed" state showing 00:00 until the user initiates a new action
+- **FR-014**: Notifications MUST be distinguishable between work and break completions via different message text
+- **FR-015**: When a session completes, the timer MUST remain in "completed" state showing 00:00 until the user starts a new session (work or break) or cancels
 - **FR-016**: System MUST NOT persist session state across application restarts; closing the app discards any active or paused session
 - **FR-017**: System MUST NOT automatically transition between phases; user must explicitly start the next session (work or break)
+- **FR-018**: System MUST provide status command showing current session state, type, remaining time, and progress without interactive display
+- **FR-019**: System MUST return appropriate exit codes (0=success, 1=general error, 2=invalid state transition, 3=user interrupted)
 
 ### Key Entities
 
@@ -142,9 +144,9 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 
 - **SC-001**: Users can start and complete a 25-minute work session with time accuracy within 1 second
 - **SC-002**: Users can start and complete a 5-minute break session with time accuracy within 1 second
-- **SC-003**: Users receive completion notifications within 2 seconds of timer reaching zero
+- **SC-003**: Users receive completion notifications within 2 seconds (≤2.0s) of timer reaching zero
 - **SC-004**: Timer display updates are visually smooth with refresh rate of at least 1 Hz (once per second)
-- **SC-005**: 95% of users successfully complete their first work-break cycle without errors
+- **SC-005**: 95% of users successfully complete their first work-break cycle without errors (Manual Validation Metric - measured via user testing, not automated tests)
 - **SC-006**: Pause and resume operations preserve remaining time with accuracy within 1 second
 - **SC-007**: All timer operations (start, pause, resume, cancel) respond to user input within 500 milliseconds
 

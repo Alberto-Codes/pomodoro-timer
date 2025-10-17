@@ -18,7 +18,7 @@ Implement a CLI-based Pomodoro timer supporting 25-minute work sessions and 5-mi
 **Target Platform**: CLI (cross-platform: Windows/Linux/macOS)  
 **Project Type**: Single project  
 **Performance Goals**: Timer accuracy within 1 second (SC-001, SC-002), 1 Hz display refresh (SC-004)  
-**Constraints**: <500ms response to user input (SC-007), <2 seconds notification latency (SC-003)  
+**Constraints**: <500ms response to user input (SC-007), ≤2.0 seconds notification latency (SC-003)  
 **Scale/Scope**: Single user, single active timer, 2 session types (work/break)
 
 ## Constitution Check
@@ -122,7 +122,7 @@ tests/
 **Output**: [research.md](./research.md)
 
 **Key Decisions**:
-- Timer implementation: `asyncio` event loop with `asyncio.sleep()`
+- Timer implementation: `asyncio` event loop with `asyncio.sleep(0.1)` for 10Hz refresh (exceeds SC-004 requirement of 1Hz for smoother visual UX with minimal CPU overhead)
 - Time tracking: `time.time()` for accuracy
 - Display: ANSI escape codes with `\r` for in-place updates
 - Notifications: `\a` terminal bell + visual messages
