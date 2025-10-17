@@ -26,6 +26,7 @@ See [ty documentation](https://docs.astral.sh/ty/) for more.
 
 ## pytest
 - `uv run pytest -n auto` to run tests in parallel
+- `uv run pytest --cov=src --cov-report=term-missing` to see test coverage
 
 See [pytest documentation](https://docs.pytest.org/) for more.
 
