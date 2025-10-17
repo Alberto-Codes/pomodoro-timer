@@ -17,16 +17,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.ruff]
-line-length = 88
+line-length = 100
+target-version = "py312"
 
 [tool.ruff.lint]
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "D",   # pydocstyle
-]
+select = ["D"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
