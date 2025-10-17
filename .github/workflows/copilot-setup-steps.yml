@@ -1,0 +1,33 @@
+name: "Copilot Setup Steps"
+
+# Automatically run when this file changes for validation
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # Job MUST be named `copilot-setup-steps` to be picked up by Copilot
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    
+    # Minimum permissions needed
+    permissions:
+      contents: read  # Required to checkout code
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          # Python version auto-detected from .python-version or pyproject.toml
+      
+      - name: Sync dependencies with uv
+        run: uv sync --dev
