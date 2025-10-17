@@ -15,3 +15,26 @@ pomodoro-timer = "pomodoro_timer:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "D",   # pydocstyle
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.14.1",
+    "ty>=0.0.1a23",
+]
