@@ -1,50 +1,142 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+- Version: Initial → 1.0.0
+- Constitution created from scratch for Pomodoro Timer project
+- Modified Principles: N/A (initial creation)
+- Added Sections: All - Core Principles (5), Quality Gates, Development Workflow, Governance
+- Removed Sections: N/A
+- Templates Updated:
+  ✅ .specify/templates/plan-template.md - Added Constitution Check with specific principle gates
+  ✅ .specify/templates/spec-template.md - Already aligned (no changes needed)
+  ✅ .specify/templates/tasks-template.md - Updated to mandate tests (was optional, now required)
+  ✅ .github/prompts/speckit.tasks.prompt.md - Updated to mandate tests throughout
+  ✅ .github/prompts/*.md - Verified no agent-specific references (CLAUDE, GPT, etc.)
+- Follow-up TODOs: None - all placeholders resolved, all templates synchronized
+-->
+
+# Pomodoro Timer Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Test-First Development (NON-NEGOTIABLE)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Every feature MUST follow strict TDD workflow:
+- Write acceptance tests FIRST (derived from user stories)
+- Get user approval on failing tests before any implementation
+- Follow Red-Green-Refactor cycle rigorously
+- Tests define the contract - implementation follows
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+**Rationale**: Tests document intent, catch regressions early, and ensure features solve the actual problem before code is written. This is especially critical in early development to establish correct patterns.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Type Safety & Code Quality
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+All code MUST meet these non-negotiable standards:
+- Type hints required on all functions (enforced by `ty`)
+- Google-style docstrings required on all public interfaces (enforced by `ruff`)
+- 100-character line length (enforced by `ruff`)
+- Zero linting errors before commit
+- Code formatted via `ruff format`
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: Type safety catches bugs at development time. Consistent style reduces cognitive load. Documentation ensures maintainability as the project grows.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. Incremental & Independent Implementation
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Features MUST be broken into independently testable user stories:
+- Each story deliverable as standalone MVP increment
+- Stories prioritized (P1, P2, P3...) by value
+- Implementation validates one story completely before starting next
+- Parallel work only on different stories with no shared files
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+**Rationale**: Incremental delivery provides early value, reduces risk, and allows course correction. Independent stories enable team parallelization without merge conflicts.
+
+### IV. Modern Python Tooling
+
+Project MUST use cutting-edge Python ecosystem tools:
+- `uv` for all dependency management (never manual `pyproject.toml` edits)
+- `ruff` for linting and formatting (single tool replaces multiple)
+- `ty` for type checking
+- `pytest` with coverage tracking
+- Python 3.12+ features and idioms
+
+**Rationale**: Modern tooling dramatically improves developer experience and reduces configuration overhead. `uv` eliminates dependency hell. `ruff` is 100x faster than legacy tools. Type checking prevents entire bug classes.
+
+### V. Simplicity & YAGNI
+
+Start simple and only add complexity when proven necessary:
+- No frameworks until clearly needed (CLI-first with stdlib)
+- No abstractions until pattern repeats 3+ times
+- No dependencies until stdlib insufficient
+- Question every "what if" scenario - implement when needed, not before
+
+**Rationale**: Premature abstraction is the root of all evil. Simple code is readable, debuggable, and maintainable. The Pomodoro Timer should stay lean and focused.
+
+## Quality Gates
+
+### Before Any Commit
+
+- [ ] All tests pass (`uv run pytest`)
+- [ ] Type checking passes (`uv run ty check`)
+- [ ] Linting passes (`uv run ruff check`)
+- [ ] Code formatted (`uv run ruff format`)
+- [ ] Coverage maintained or improved
+
+### Before PR Merge
+
+- [ ] All user story acceptance criteria met
+- [ ] Integration tests demonstrate independent story functionality
+- [ ] Documentation updated (docstrings, README if needed)
+- [ ] No TODOs or placeholder code
+- [ ] Quickstart/demo validated if applicable
+
+## Development Workflow
+
+### Feature Development Process
+
+1. **Specify**: Write user stories with acceptance criteria (spec.md)
+2. **Plan**: Research & design, define structure (plan.md, data-model.md, contracts/)
+3. **Test**: Write failing tests from acceptance criteria
+4. **Approve**: Get user sign-off on failing test behavior
+5. **Implement**: Write minimal code to pass tests
+6. **Refactor**: Improve design while keeping tests green
+7. **Validate**: Run full test suite, check coverage, verify story independently
+
+### Dependency Management Rules
+
+- Add production deps: `uv add <package>`
+- Add dev deps: `uv add <package> --dev`
+- Sync after clone/pull: `uv sync`
+- Always commit `uv.lock` with dependency changes
+
+### Code Review Checklist
+
+Every code change MUST verify:
+- Tests written first and failed before implementation
+- All quality gates pass
+- No unnecessary complexity introduced
+- Type hints and docstrings present
+- User story acceptance criteria fully met
+- Changes align with constitution principles
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+**Amendment Process**: Constitution changes require:
+1. Written justification of need
+2. Review against existing principles
+3. Update to version number (semantic versioning)
+4. Propagation to dependent templates (plan, spec, tasks)
+5. Update to this governance section's "Last Amended" date
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Versioning Policy**:
+- MAJOR: Backward incompatible governance changes (e.g., removing a principle)
+- MINOR: New principle added or material expansion of existing
+- PATCH: Clarifications, wording improvements, non-semantic refinements
+
+**Compliance Review**:
+- Every PR must verify alignment with constitution principles
+- Violations require explicit justification in PR description
+- Constitution supersedes all other practices
+- When in doubt, refer to Principle V (Simplicity)
+
+**Reference**: For runtime development guidance, see `.github/copilot-instructions.md`
+
+**Version**: 1.0.0 | **Ratified**: 2025-10-17 | **Last Amended**: 2025-10-17

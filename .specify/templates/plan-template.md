@@ -31,7 +31,19 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify alignment with Pomodoro Timer Constitution (`.specify/memory/constitution.md`):
+
+- [ ] **Principle I (Test-First)**: Feature has testable acceptance criteria? Tests will be written before implementation?
+- [ ] **Principle II (Type Safety & Quality)**: Plan includes type hints, docstrings, and quality gates?
+- [ ] **Principle III (Incremental)**: Feature broken into independent, prioritized user stories (P1, P2, P3)?
+- [ ] **Principle IV (Modern Tooling)**: Uses uv/ruff/ty/pytest? No manual pyproject.toml edits?
+- [ ] **Principle V (Simplicity)**: No premature abstractions? Justified if adding frameworks/patterns?
+
+**Violations** (must be justified in Complexity Tracking section if checked):
+- [ ] Adding dependency when stdlib could work
+- [ ] Creating abstraction before 3rd repetition
+- [ ] Framework introduction without clear need
+- [ ] Skipping tests or implementing before test approval
 
 ## Project Structure
 
