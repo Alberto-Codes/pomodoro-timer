@@ -5,6 +5,36 @@
 **Status**: Draft  
 **Input**: User description: "Add a pomodoro timer with 25-minute work sessions and 5-minute breaks"
 
+## Clarifications
+
+### Session 2025-10-17
+
+- Q: How should the system behave when a session completes but the user doesn't immediately interact with it? → A: Timer remains in "completed" state showing 00:00 until user takes action (start break/work or cancel)
+- Q: Should the app attempt to save and restore an in-progress session if the user closes and reopens the application? → A: Session is lost; timer returns to idle state on app restart
+- Q: What notification mechanism(s) should the CLI timer use to alert users when sessions complete? → A: Both visual terminal message and audio bell/beep
+- Q: Should the timer automatically transition from one phase to another (e.g., work → break) or require manual user initiation? → A: Manual start only - user must explicitly start break after work and vice versa
+- Q: Should this feature include long breaks after a certain number of completed work sessions? → A: Not in scope - only 25-minute work and 5-minute breaks
+
+## Scope
+
+### In Scope
+
+- 25-minute work sessions with countdown timer
+- 5-minute break sessions with countdown timer
+- Timer controls: start, pause, resume, cancel
+- Visual and audio notifications on session completion
+- Display of remaining time and session state
+
+### Out of Scope
+
+- Long breaks (15-30 minutes) after multiple work sessions
+- Session history or statistics tracking
+- Customizable session durations
+- Task management or to-do lists
+- Multiple concurrent timers
+- Session persistence across app restarts
+- Configuration settings or user preferences
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Start and Complete Work Session (Priority: P1)
@@ -72,11 +102,11 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 
 ### Edge Cases
 
-- What happens when the timer reaches zero but the user hasn't acknowledged the notification?
-- How does the system handle if a user tries to start a work session while a break is already running?
-- What happens if the application is closed or loses focus during an active session?
-- How does the timer behave if the system time changes (e.g., daylight saving time, manual time adjustment)?
-- What happens if a user tries to start multiple timers simultaneously?
+- Timer remains in "completed" state displaying 00:00 when session ends until user starts next session or cancels
+- System prevents starting a work session while a break is already running (and vice versa) per FR-011
+- If application is closed or loses focus during an active session, the session state is lost and timer resets to idle on restart
+- Timer countdown is based on elapsed real-time; system time changes (daylight saving, manual adjustment) may cause timer drift but will not pause or reset the active session
+- Multiple simultaneous timers are prevented by FR-011; attempting to start a new session while one is active results in an error or is ignored
 
 ## Requirements *(mandatory)*
 
@@ -85,8 +115,8 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 - **FR-001**: System MUST support 25-minute work sessions that count down to zero
 - **FR-002**: System MUST support 5-minute break sessions that count down to zero
 - **FR-003**: System MUST display remaining time in minutes and seconds format (MM:SS)
-- **FR-004**: System MUST notify users when a work session completes
-- **FR-005**: System MUST notify users when a break session completes
+- **FR-004**: System MUST notify users when a work session completes using both visual terminal output and audio signal (bell/beep)
+- **FR-005**: System MUST notify users when a break session completes using both visual terminal output and audio signal (bell/beep)
 - **FR-006**: Users MUST be able to start a work session from idle state
 - **FR-007**: Users MUST be able to start a break session from idle state or after a work session completes
 - **FR-008**: Users MUST be able to pause an active timer (work or break)
@@ -97,6 +127,9 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 - **FR-013**: System MUST display current session state (idle, running, paused, completed)
 - **FR-014**: System MUST update the time display at least once per second during active sessions
 - **FR-015**: Notifications MUST be distinguishable between work and break completions
+- **FR-016**: When a session completes, the timer MUST remain in "completed" state showing 00:00 until the user initiates a new action
+- **FR-017**: System MUST NOT persist session state across application restarts; closing the app discards any active or paused session
+- **FR-018**: System MUST NOT automatically transition between phases; user must explicitly start the next session (work or break)
 
 ### Key Entities
 
@@ -122,7 +155,7 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 - Sessions run in real-time based on system clock
 - Standard Pomodoro durations are 25 minutes for work and 5 minutes for breaks
 - Users interact with one timer at a time (no concurrent sessions)
-- Notifications use platform-standard notification mechanisms (CLI output, terminal bell, or system notifications)
+- Notifications combine visual terminal output with audio bell/beep for maximum user awareness
 - Timer accuracy requirements align with typical productivity timer expectations (within 1 second)
 - Application maintains timer state during normal operation but does not persist state across application restarts
 - Users are responsible for acknowledging notifications; timer doesn't force interaction
