@@ -102,7 +102,7 @@ Single project structure (per plan.md):
 - [ ] T047 [US1] Run linting: `uv run ruff check src/ tests/`
 - [ ] T048 [US1] Run formatting: `uv run ruff format src/ tests/`
 - [ ] T049 [US1] Measure code coverage: `uv run pytest --cov=src --cov-report=term-missing`
-- [ ] T050 [US1] Manual validation: Install package (`uv pip install -e .`), run `pomodoro-timer start work`, verify countdown, wait for completion, verify notification
+- [ ] T050 [US1] Manual validation: Run `uv run pomodoro-timer start work`, verify countdown, wait for completion, verify notification
 - [ ] T051 [US1] Add Google-style docstrings to all public functions/methods/classes in User Story 1 code
 
 **Checkpoint**: User Story 1 (MVP) complete - user can start and complete 25-minute work session with notification

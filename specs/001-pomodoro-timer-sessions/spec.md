@@ -115,21 +115,20 @@ The user starts a work session or break but needs to abandon it completely (e.g.
 - **FR-001**: System MUST support 25-minute work sessions that count down to zero
 - **FR-002**: System MUST support 5-minute break sessions that count down to zero
 - **FR-003**: System MUST display remaining time in minutes and seconds format (MM:SS)
-- **FR-004**: System MUST notify users when a work session completes using both visual terminal output and audio signal (bell/beep)
-- **FR-005**: System MUST notify users when a break session completes using both visual terminal output and audio signal (bell/beep)
-- **FR-006**: Users MUST be able to start a work session from idle state
-- **FR-007**: Users MUST be able to start a break session from idle state or after a work session completes
-- **FR-008**: Users MUST be able to pause an active timer (work or break)
-- **FR-009**: Users MUST be able to resume a paused timer
-- **FR-010**: Users MUST be able to cancel an active or paused timer
-- **FR-011**: System MUST prevent starting a new session while another session is active
-- **FR-012**: System MUST display current session type (work or break)
-- **FR-013**: System MUST display current session state (idle, running, paused, completed)
-- **FR-014**: System MUST update the time display at least once per second during active sessions
-- **FR-015**: Notifications MUST be distinguishable between work and break completions
-- **FR-016**: When a session completes, the timer MUST remain in "completed" state showing 00:00 until the user initiates a new action
-- **FR-017**: System MUST NOT persist session state across application restarts; closing the app discards any active or paused session
-- **FR-018**: System MUST NOT automatically transition between phases; user must explicitly start the next session (work or break)
+- **FR-004**: System MUST notify users when a session completes (work or break) using both visual terminal output and audio signal (bell/beep)
+- **FR-005**: Users MUST be able to start a work session from idle state
+- **FR-006**: Users MUST be able to start a break session from idle state or after a work session completes
+- **FR-007**: Users MUST be able to pause an active timer (work or break)
+- **FR-008**: Users MUST be able to resume a paused timer
+- **FR-009**: Users MUST be able to cancel an active or paused timer
+- **FR-010**: System MUST prevent starting a new session while another session is active
+- **FR-011**: System MUST display current session type (work or break)
+- **FR-012**: System MUST display current session state (idle, running, paused, completed)
+- **FR-013**: System MUST update the time display at least once per second during active sessions
+- **FR-014**: Notifications MUST be distinguishable between work and break completions
+- **FR-015**: When a session completes, the timer MUST remain in "completed" state showing 00:00 until the user initiates a new action
+- **FR-016**: System MUST NOT persist session state across application restarts; closing the app discards any active or paused session
+- **FR-017**: System MUST NOT automatically transition between phases; user must explicitly start the next session (work or break)
 
 ### Key Entities
 

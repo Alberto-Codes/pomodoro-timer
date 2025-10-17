@@ -83,7 +83,8 @@ src/pomodoro_timer/
 ├── models/
 │   ├── __init__.py
 │   ├── session.py       # TimerSession entity with state machine
-│   └── types.py         # SessionType, SessionState enums
+│   ├── types.py         # SessionType, SessionState enums
+│   └── exceptions.py    # Custom exceptions (TimerError, InvalidStateTransition, SessionAlreadyActive)
 ├── timer/
 │   ├── __init__.py
 │   ├── engine.py        # Core timer loop (asyncio-based)
