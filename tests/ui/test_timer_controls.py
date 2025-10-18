@@ -185,7 +185,7 @@ class TestCancelControl:
         app_state.session.start_work()
 
         await user.open("/")
-        await user.click("Cancel")
+        user.find("Cancel").click()
 
         assert app_state.is_idle
 
@@ -196,7 +196,7 @@ class TestCancelControl:
         app_state.pause()
 
         await user.open("/")
-        await user.click("Cancel")
+        user.find("Cancel").click()
 
         assert app_state.is_idle
 
@@ -258,7 +258,7 @@ class TestButtonErrorHandling:
 
         # Clicking start should trigger async operation
         # (actual loading state verification depends on implementation)
-        await user.click("Start Work")
+        user.find("Start Work").click()
 
         # Verify operation completed
         assert app_state.is_running
