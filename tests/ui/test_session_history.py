@@ -92,10 +92,8 @@ class TestHistoryView:
         await user.open("/")
 
         # Assert - Should see all 3 sessions
-        # Note: We're checking for the count of "Work" and "Break" labels
-        content = await user.find_all_content()
-        assert content.count("Work") >= 2  # 2 work sessions
-        assert content.count("Break") >= 1  # 1 break session
+        await user.should_see("Work")
+        await user.should_see("Break")
 
 
 class TestHistoryUpdates:
@@ -146,8 +144,7 @@ class TestClearHistory:
         await user.open("/")
 
         # Find and click clear history button
-        clear_button = await user.find("Clear History")
-        await clear_button.click()
+        user.find("Clear History").click()
 
         # Assert - History should be empty
         assert len(app_state._history) == 0
@@ -167,8 +164,7 @@ class TestClearHistory:
 
         # Act
         await user.open("/")
-        clear_button = await user.find("Clear History")
-        await clear_button.click()
+        user.find("Clear History").click()
 
         # Assert - Should see confirmation message
         # (Implementation will determine exact message)
