@@ -1,5 +1,6 @@
 """Acceptance tests for session history view."""
 
+import asyncio
 from datetime import datetime, timedelta
 
 import pytest
@@ -119,6 +120,9 @@ class TestHistoryUpdates:
         # Add session to observable list (simulating completion)
         app_state._history.append(session)
 
+        # Wait for UI refresh cycle (1 second timer)
+        await asyncio.sleep(1.1)
+
         # Assert - Should see the new session appear
         await user.should_see("Work")
         await user.should_see("25 min")
@@ -143,8 +147,13 @@ class TestClearHistory:
         # Act
         await user.open("/")
 
-        # Find and click clear history button
+        # Find and click clear history button (opens confirmation dialog)
         user.find("Clear History").click()
+        await asyncio.sleep(0.2)  # Wait for dialog to open
+
+        # Click "Clear All" in confirmation dialog
+        user.find("Clear All").click()
+        await asyncio.sleep(1.1)  # Wait for clear + UI refresh
 
         # Assert - History should be empty
         assert len(app_state._history) == 0
