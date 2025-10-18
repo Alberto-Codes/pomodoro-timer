@@ -3,6 +3,8 @@
 This test verifies the complete timer workflow integrating display and controls.
 """
 
+import asyncio
+
 import pytest
 from nicegui.testing import User
 
@@ -30,7 +32,7 @@ class TestCompleteTimerLifecycle:
         await user.open("/")
 
         # Step 1: Start work session
-        await user.click("Start Work")
+        user.find("Start Work").click()
         assert app_state.is_running
         assert app_state.current_type_display == "Work"
 
@@ -39,34 +41,34 @@ class TestCompleteTimerLifecycle:
         assert initial_time > 0
 
         # Step 2: Wait for time to elapse
-        await user.wait(2.0)
+        await asyncio.sleep(2.0)
 
         # Verify time decreased
         time_after_wait = app_state.session.remaining_seconds
         assert time_after_wait < initial_time
 
         # Step 3: Pause the session
-        await user.click("Pause")
+        user.find("Pause").click()
         assert app_state.is_paused
 
         # Verify time is preserved
         paused_time = app_state.session.remaining_seconds
 
         # Wait while paused
-        await user.wait(1.0)
+        await asyncio.sleep(1.0)
 
         # Time should NOT change while paused
         assert app_state.session.remaining_seconds == paused_time
 
         # Step 4: Resume the session
-        await user.click("Resume")
+        user.find("Resume").click()
         assert app_state.is_running
 
         # Verify time continues from paused point
         assert app_state.session.remaining_seconds <= paused_time
 
         # Step 5: Cancel the session
-        await user.click("Cancel")
+        user.find("Cancel").click()
         assert app_state.is_idle
         assert app_state.current_time_display == "00:00"
 
@@ -82,7 +84,7 @@ class TestCompleteTimerLifecycle:
         await user.open("/")
 
         # Start break session
-        await user.click("Start Break")
+        user.find("Start Break").click()
         assert app_state.is_running
         assert app_state.current_type_display == "Break"
 
@@ -90,10 +92,10 @@ class TestCompleteTimerLifecycle:
         assert app_state.session.remaining_seconds <= 300
 
         # Wait for time to elapse
-        await user.wait(1.5)
+        await asyncio.sleep(1.5)
 
         # Cancel
-        await user.click("Cancel")
+        user.find("Cancel").click()
         assert app_state.is_idle
 
     async def test_cannot_start_multiple_sessions_simultaneously(self, user: User):
@@ -108,7 +110,7 @@ class TestCompleteTimerLifecycle:
         await user.open("/")
 
         # Start work session
-        await user.click("Start Work")
+        user.find("Start Work").click()
         assert app_state.is_running
 
         # Try to start break (should be prevented by disabled button)
@@ -130,20 +132,20 @@ class TestCompleteTimerLifecycle:
         await user.open("/")
 
         # Idle → Running
-        await user.click("Start Work")
+        user.find("Start Work").click()
         await user.should_see("Running")
         await user.should_see("Work")
 
         # Running → Paused
-        await user.click("Pause")
+        user.find("Pause").click()
         # Paused state should be visible (exact text depends on implementation)
         assert app_state.is_paused
 
         # Paused → Running
-        await user.click("Resume")
+        user.find("Resume").click()
         await user.should_see("Running")
 
         # Running → Idle
-        await user.click("Cancel")
+        user.find("Cancel").click()
         await user.should_see("Idle")
         await user.should_see("00:00")
