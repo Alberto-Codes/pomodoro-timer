@@ -213,10 +213,24 @@ class AppState:
 
         This method should be called periodically (e.g., every second)
         to detect when a session transitions to COMPLETED state.
+        Shows a notification when session completes.
         """
+        from nicegui import ui
+
         if self._session.state == SessionState.COMPLETED and self._session.session_type:
+            # Get session type before recording
+            session_type = self._session.session_type.name.title()
+
             # Record the completion
             self.record_completion()
+
+            # Show completion notification
+            ui.notify(
+                f"🎉 {session_type} session completed!",
+                type="positive",
+                position="top",
+            )
+
             # Reset to idle for next session
             self._session.reset()
 

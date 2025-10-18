@@ -6,6 +6,7 @@ This module provides the NiceGUI application entry point.
 from nicegui import ui
 
 from pomodoro_timer.models.types import SessionState
+from pomodoro_timer.ui.keyboard import setup_keyboard_shortcuts
 from pomodoro_timer.ui.pages.main import main_page
 from pomodoro_timer.ui.state import app_state
 
@@ -29,6 +30,9 @@ def run_ui(*, reload: bool = False, port: int = 8080) -> None:
 
     # Load user configuration
     app_state.load_config()
+
+    # Setup global keyboard shortcuts
+    setup_keyboard_shortcuts(app_state)
 
     # Register main page route
     ui.page("/")(main_page)
