@@ -21,6 +21,7 @@ class TestMain:
         # Setup mocks
         mock_parser = MagicMock()
         mock_args = MagicMock()
+        mock_args.ui = False  # Ensure --ui flag is not set
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.return_value = 0
@@ -44,6 +45,7 @@ class TestMain:
         # Setup mocks
         mock_parser = MagicMock()
         mock_args = MagicMock()
+        mock_args.ui = False  # Ensure --ui flag is not set
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.return_value = 2  # Error code
@@ -60,6 +62,7 @@ class TestMain:
         # Setup mocks
         mock_parser = MagicMock()
         mock_args = MagicMock()
+        mock_args.ui = False  # Ensure --ui flag is not set
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.side_effect = KeyboardInterrupt()
@@ -84,6 +87,7 @@ class TestMain:
         # Setup mocks
         mock_parser = MagicMock()
         mock_args = MagicMock()
+        mock_args.ui = False  # Ensure --ui flag is not set
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.side_effect = KeyboardInterrupt()
