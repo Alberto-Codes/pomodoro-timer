@@ -11,6 +11,16 @@ from pomodoro_timer.ui.pages.main import main_page
 from pomodoro_timer.ui.state import app_state
 
 
+# Define page route at module level (required for NiceGUI testing)
+@ui.page("/")
+def _main_page() -> None:
+    """Main page route handler."""
+    # Setup global keyboard shortcuts inside page
+    setup_keyboard_shortcuts(app_state)
+    # Render main page
+    main_page()
+
+
 def run_ui(*, reload: bool = False, port: int = 8080) -> None:
     """Launch the NiceGUI web interface.
 
@@ -31,13 +41,10 @@ def run_ui(*, reload: bool = False, port: int = 8080) -> None:
     # Load user configuration
     app_state.load_config()
 
-    @ui.page("/")
-    def _main_page() -> None:
-        """Main page route handler."""
-        # Setup global keyboard shortcuts inside page
-        setup_keyboard_shortcuts(app_state)
-        # Render main page
-        main_page()
-
-    # Run the app
+    # Run the app (this blocks until server stops)
     ui.run(port=port, reload=reload, title="🍅 Pomodoro Timer")
+
+
+# For testing: NiceGUI plugin runs this file with run_name='__main__'
+if __name__ in {"__main__", "__mp_main__"}:
+    ui.run(title="🍅 Pomodoro Timer")
