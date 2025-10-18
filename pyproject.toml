@@ -7,7 +7,10 @@ authors = [
     { name = "Alberto-Codes", email = "94092485+Alberto-Codes@users.noreply.github.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "nicegui>=3.0.4",
+    "tomli-w>=1.2.0",
+]
 
 [project.scripts]
 pomodoro-timer = "pomodoro_timer:main"

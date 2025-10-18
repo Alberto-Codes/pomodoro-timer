@@ -1,7 +1,6 @@
 """Unit tests for CLI command handlers."""
 
 import argparse
-from io import StringIO
 
 import pytest
 
@@ -77,38 +76,40 @@ class TestHandleStart:
     async def test_handle_start_work_success(self):
         """Test handling start work command successfully."""
         session = TimerSession()
-        
+
         # Run briefly and stop
         import asyncio
+
         task = asyncio.create_task(handle_start(session, "work"))
         await asyncio.sleep(0.2)
-        
+
         # Stop the engine by cancelling
         task.cancel()
         try:
             await task
         except asyncio.CancelledError:
             pass
-        
+
         assert session.session_type == SessionType.WORK
 
     @pytest.mark.asyncio
     async def test_handle_start_break_success(self):
         """Test handling start break command successfully."""
         session = TimerSession()
-        
+
         # Run briefly and stop
         import asyncio
+
         task = asyncio.create_task(handle_start(session, "break"))
         await asyncio.sleep(0.2)
-        
+
         # Stop the engine by cancelling
         task.cancel()
         try:
             await task
         except asyncio.CancelledError:
             pass
-        
+
         assert session.session_type == SessionType.BREAK
 
     @pytest.mark.asyncio
@@ -116,9 +117,9 @@ class TestHandleStart:
         """Test that handle_start returns error code when session already active."""
         session = TimerSession()
         session.start_work()
-        
+
         result = await handle_start(session, "work")
-        
+
         assert result == 2
 
 
@@ -128,9 +129,9 @@ class TestHandleStatus:
     def test_handle_status_idle_session(self, capsys):
         """Test status display for idle session."""
         session = TimerSession()
-        
+
         result = handle_status(session)
-        
+
         assert result == 0
         captured = capsys.readouterr()
         assert "State:" in captured.out
@@ -140,9 +141,9 @@ class TestHandleStatus:
         """Test status display for running work session."""
         session = TimerSession()
         session.start_work()
-        
+
         result = handle_status(session)
-        
+
         assert result == 0
         captured = capsys.readouterr()
         assert "State:" in captured.out
@@ -155,9 +156,9 @@ class TestHandleStatus:
         session = TimerSession()
         session.start_break()
         session.pause()
-        
+
         result = handle_status(session)
-        
+
         assert result == 0
         captured = capsys.readouterr()
         assert "State:" in captured.out
@@ -172,9 +173,9 @@ class TestHandlePause:
         """Test pausing a running session successfully."""
         session = TimerSession()
         session.start_work()
-        
+
         result = handle_pause(session)
-        
+
         assert result == 0
         assert session.state == SessionState.PAUSED
         captured = capsys.readouterr()
@@ -183,9 +184,9 @@ class TestHandlePause:
     def test_handle_pause_error_when_not_running(self, capsys):
         """Test pause returns error when session not running."""
         session = TimerSession()
-        
+
         result = handle_pause(session)
-        
+
         assert result == 2
         captured = capsys.readouterr()
         assert "Error:" in captured.err
@@ -200,12 +201,13 @@ class TestHandleResume:
         session = TimerSession()
         session.start_work()
         session.pause()
-        
+
         # Run briefly and stop
         import asyncio
+
         task = asyncio.create_task(handle_resume(session))
         await asyncio.sleep(0.2)
-        
+
         # Cancel to stop the countdown
         task.cancel()
         try:
@@ -217,9 +219,9 @@ class TestHandleResume:
     async def test_handle_resume_error_when_not_paused(self, capsys):
         """Test resume returns error when session not paused."""
         session = TimerSession()
-        
+
         result = await handle_resume(session)
-        
+
         assert result == 2
         captured = capsys.readouterr()
         assert "Error:" in captured.err
@@ -232,9 +234,9 @@ class TestHandleCancel:
         """Test canceling a session successfully."""
         session = TimerSession()
         session.start_work()
-        
+
         result = handle_cancel(session)
-        
+
         assert result == 0
         assert session.state == SessionState.IDLE
         captured = capsys.readouterr()
@@ -243,9 +245,9 @@ class TestHandleCancel:
     def test_handle_cancel_from_idle(self, capsys):
         """Test canceling from idle state."""
         session = TimerSession()
-        
+
         result = handle_cancel(session)
-        
+
         assert result == 0
         assert session.state == SessionState.IDLE
 
@@ -257,13 +259,14 @@ class TestRunCommand:
     async def test_run_command_start_work(self):
         """Test running start work command."""
         args = argparse.Namespace(command="start", session_type="work")
-        
+
         # We need to cancel the task since it will run indefinitely
         import asyncio
+
         task = asyncio.create_task(run_command(args))
         await asyncio.sleep(0.2)
         task.cancel()
-        
+
         try:
             await task
         except asyncio.CancelledError:
@@ -273,13 +276,14 @@ class TestRunCommand:
     async def test_run_command_start_break(self):
         """Test running start break command."""
         args = argparse.Namespace(command="start", session_type="break")
-        
+
         # We need to cancel the task since it will run indefinitely
         import asyncio
+
         task = asyncio.create_task(run_command(args))
         await asyncio.sleep(0.2)
         task.cancel()
-        
+
         try:
             await task
         except asyncio.CancelledError:
@@ -289,18 +293,18 @@ class TestRunCommand:
     async def test_run_command_status(self, capsys):
         """Test running status command."""
         args = argparse.Namespace(command="status")
-        
+
         result = await run_command(args)
-        
+
         assert result == 0
 
     @pytest.mark.asyncio
     async def test_run_command_pause(self):
         """Test running pause command on idle session."""
         args = argparse.Namespace(command="pause")
-        
+
         result = await run_command(args)
-        
+
         # Should return error since no active session
         assert result == 2
 
@@ -308,9 +312,9 @@ class TestRunCommand:
     async def test_run_command_resume(self):
         """Test running resume command on idle session."""
         args = argparse.Namespace(command="resume")
-        
+
         result = await run_command(args)
-        
+
         # Should return error since no paused session
         assert result == 2
 
@@ -318,18 +322,18 @@ class TestRunCommand:
     async def test_run_command_cancel(self, capsys):
         """Test running cancel command."""
         args = argparse.Namespace(command="cancel")
-        
+
         result = await run_command(args)
-        
+
         assert result == 0
 
     @pytest.mark.asyncio
     async def test_run_command_no_command(self, capsys):
         """Test running with no command specified."""
         args = argparse.Namespace(command=None)
-        
+
         result = await run_command(args)
-        
+
         assert result == 1
         captured = capsys.readouterr()
         assert "Error:" in captured.err
