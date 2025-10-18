@@ -9,6 +9,7 @@ from nicegui import ui
 from pomodoro_timer.ui.state import app_state
 
 
+@ui.refreshable
 def session_history() -> None:
     """Display session history table with completed sessions.
 
