@@ -36,7 +36,7 @@ Users can start, pause, resume, and stop timer sessions through interactive cont
 1. **Given** the UI is open with no timer running, **When** a user clicks the "Start" button, **Then** a new Pomodoro work session begins counting down
 2. **Given** a timer is running, **When** a user clicks "Pause", **Then** the timer pauses and displays the paused state
 3. **Given** a timer is paused, **When** a user clicks "Resume", **Then** the timer continues from where it was paused
-4. **Given** a timer is running or paused, **When** a user clicks "Stop", **Then** the timer stops and resets to idle state
+4. **Given** a timer is running or paused, **When** a user clicks "Cancel", **Then** the timer cancels the session and resets to idle state
 
 ---
 
@@ -74,11 +74,11 @@ Users can configure timer durations for work sessions, short breaks, and long br
 
 ### Edge Cases
 
-- What happens when the user closes the application while a timer is running? (Should state be preserved or reset?)
-- How does the system handle invalid duration inputs in settings (negative numbers, zero, extremely large values)?
-- What happens if the system time changes while a timer is running (clock adjustment, timezone change)?
-- How does the UI behave when the window is resized to very small dimensions?
-- What happens when multiple instances of the UI are launched simultaneously?
+- What happens when the user closes the application while a timer is running? **Decision**: State is not preserved across restarts - timer resets to idle (covered by T029 app initialization behavior)
+- How does the system handle invalid duration inputs in settings (negative numbers, zero, extremely large values)? **Covered**: T046 validates input ranges, T050 tests validation feedback
+- What happens if the system time changes while a timer is running (clock adjustment, timezone change)? **Out of scope**: Timer uses elapsed time calculation, not wall-clock comparison, so time changes don't affect countdown
+- How does the UI behave when the window is resized to very small dimensions? **Covered**: FR-013 requires 800x600 minimum, T074 implements responsive design
+- What happens when multiple instances of the UI are launched simultaneously? **Out of scope**: Single-user local application, multiple instances share same config/history via file system
 
 ## Requirements *(mandatory)*
 
@@ -86,9 +86,9 @@ Users can configure timer durations for work sessions, short breaks, and long br
 
 - **FR-001**: System MUST display a visual timer showing remaining time in MM:SS format
 - **FR-002**: System MUST display the current session type (Work, Short Break, Long Break)
-- **FR-003**: System MUST provide interactive buttons for Start, Pause, Resume, and Stop actions
+- **FR-003**: System MUST provide interactive buttons for Start, Pause, Resume, and Cancel actions
 - **FR-004**: System MUST update the timer display every second while a session is running
-- **FR-005**: System MUST provide visual feedback when timer controls are clicked (button state changes)
+- **FR-005**: System MUST provide visual feedback when timer controls are clicked (button shows disabled/enabled states, loading spinner for async operations)
 - **FR-006**: System MUST display session progress as a percentage or progress indicator
 - **FR-007**: System MUST show a history view listing completed sessions with timestamps
 - **FR-008**: System MUST allow users to configure work session duration (default: 25 minutes)
@@ -96,7 +96,7 @@ Users can configure timer durations for work sessions, short breaks, and long br
 - **FR-010**: System MUST allow users to configure long break duration (default: 15 minutes)
 - **FR-011**: System MUST persist user settings between application restarts
 - **FR-012**: System MUST provide clear visual distinction between idle, running, and paused states
-- **FR-013**: System MUST handle window resize gracefully, maintaining usability at different sizes
+- **FR-013**: System MUST handle window resize gracefully, maintaining usability at different sizes (minimum 800x600, all controls accessible without horizontal scrolling)
 - **FR-014**: System MUST integrate with the existing CLI timer engine without duplicating logic
 - **FR-015**: System MUST provide keyboard shortcuts for common actions (start/pause/stop)
 
