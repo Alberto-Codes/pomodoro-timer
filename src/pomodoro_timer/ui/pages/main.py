@@ -51,6 +51,12 @@ def main_content() -> None:
         except RuntimeError:
             pass  # Client deleted during cleanup
 
+    def safe_refresh_history():
+        try:
+            session_history.refresh()
+        except RuntimeError:
+            pass  # Client deleted during cleanup
+
     def safe_check_completion():
         try:
             app_state.check_and_record_completion()
@@ -59,6 +65,7 @@ def main_content() -> None:
 
     ui.timer(1.0, safe_refresh_display)
     ui.timer(1.0, safe_refresh_controls)
+    ui.timer(1.0, safe_refresh_history)
     ui.timer(1.0, safe_check_completion)
 
 
