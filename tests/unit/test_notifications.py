@@ -68,8 +68,8 @@ class TestNotifyCompletion:
         def mock_write_raises(text):
             if text == "\a":
                 raise OSError("Terminal does not support bell")
-            assert sys.__stdout__ is not None
-            sys.__stdout__.write(text)
+            # Simulate successful write for other text (don't use __stdout__ which may be invalid)
+            return
 
         monkeypatch.setattr(sys.stdout, "write", mock_write_raises)
 
