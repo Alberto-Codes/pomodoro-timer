@@ -3,9 +3,9 @@
 This module defines UI-specific data models that complement the existing timer models.
 """
 
+import sqlite3
 from dataclasses import dataclass
 from datetime import datetime
-import sqlite3
 
 from pomodoro_timer.models.session import TimerSession
 from pomodoro_timer.models.types import SessionType
