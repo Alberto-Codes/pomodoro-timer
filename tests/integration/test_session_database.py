@@ -1,6 +1,10 @@
 """Integration tests for SessionDatabase."""
 
+import gc
+import platform
+import sqlite3
 import tempfile
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -14,9 +18,20 @@ from pomodoro_timer.ui.models import CompletedSession
 @pytest.fixture
 def temp_db():
     """Create a temporary database for testing."""
-    with tempfile.TemporaryDirectory() as tmpdir:
+    # Use ignore_cleanup_errors on Windows to handle file locking issues
+    ignore_errors = platform.system() == "Windows"
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=ignore_errors) as tmpdir:
         db_path = Path(tmpdir) / "test_sessions.db"
-        yield SessionDatabase(db_path)
+        db = SessionDatabase(db_path)
+        yield db
+
+        # Force garbage collection to release file handles (especially on Windows)
+        gc.collect()
+
+        # Small delay on Windows to allow file handles to be released
+        if platform.system() == "Windows":
+            time.sleep(0.1)
 
 
 class TestSessionDatabaseSchemaInitialization:
@@ -28,7 +43,6 @@ class TestSessionDatabaseSchemaInitialization:
         # (created by fixture)
 
         # When: Checking if table exists
-        import sqlite3
 
         with sqlite3.connect(temp_db.db_path) as conn:
             cursor = conn.execute(
@@ -45,7 +59,6 @@ class TestSessionDatabaseSchemaInitialization:
         # (created by fixture)
 
         # When: Checking for indexes
-        import sqlite3
 
         with sqlite3.connect(temp_db.db_path) as conn:
             cursor = conn.execute(
