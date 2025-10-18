@@ -208,6 +208,18 @@ class AppState:
 
     # ===== History Methods =====
 
+    def check_and_record_completion(self) -> None:
+        """Check if session completed and record it if so.
+
+        This method should be called periodically (e.g., every second)
+        to detect when a session transitions to COMPLETED state.
+        """
+        if self._session.state == SessionState.COMPLETED and self._session.session_type:
+            # Record the completion
+            self.record_completion()
+            # Reset to idle for next session
+            self._session.reset()
+
     def record_completion(self) -> None:
         """Save completed session to history and database.
 
