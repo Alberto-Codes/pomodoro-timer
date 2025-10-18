@@ -33,6 +33,7 @@ class TestCompleteTimerLifecycle:
 
         # Step 1: Start work session
         user.find("Start Work").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
         assert app_state.is_running
         assert app_state.current_type_display == "Work"
 
@@ -49,6 +50,7 @@ class TestCompleteTimerLifecycle:
 
         # Step 3: Pause the session
         user.find("Pause").click()
+        await asyncio.sleep(0.1)  # Wait for handler to complete
         assert app_state.is_paused
 
         # Verify time is preserved
@@ -62,6 +64,7 @@ class TestCompleteTimerLifecycle:
 
         # Step 4: Resume the session
         user.find("Resume").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
         assert app_state.is_running
 
         # Verify time continues from paused point
@@ -69,6 +72,7 @@ class TestCompleteTimerLifecycle:
 
         # Step 5: Cancel the session
         user.find("Cancel").click()
+        await asyncio.sleep(0.1)  # Wait for handler to complete
         assert app_state.is_idle
         assert app_state.current_time_display == "00:00"
 
@@ -85,6 +89,7 @@ class TestCompleteTimerLifecycle:
 
         # Start break session
         user.find("Start Break").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
         assert app_state.is_running
         assert app_state.current_type_display == "Break"
 
@@ -96,6 +101,7 @@ class TestCompleteTimerLifecycle:
 
         # Cancel
         user.find("Cancel").click()
+        await asyncio.sleep(0.1)  # Wait for handler to complete
         assert app_state.is_idle
 
     async def test_cannot_start_multiple_sessions_simultaneously(self, user: User):
@@ -111,6 +117,7 @@ class TestCompleteTimerLifecycle:
 
         # Start work session
         user.find("Start Work").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
         assert app_state.is_running
 
         # Try to start break (should be prevented by disabled button)
@@ -133,19 +140,23 @@ class TestCompleteTimerLifecycle:
 
         # Idle → Running
         user.find("Start Work").click()
+        await asyncio.sleep(0.1)  # Wait for async handler
         await user.should_see("Running")
         await user.should_see("Work")
 
         # Running → Paused
         user.find("Pause").click()
+        await asyncio.sleep(1.1)  # Wait for handler + UI refresh (1 second timer)
         # Paused state should be visible (exact text depends on implementation)
         assert app_state.is_paused
 
         # Paused → Running
         user.find("Resume").click()
+        await asyncio.sleep(1.1)  # Wait for async handler + UI refresh
         await user.should_see("Running")
 
         # Running → Idle
         user.find("Cancel").click()
+        await asyncio.sleep(0.1)  # Wait for handler
         await user.should_see("Idle")
         await user.should_see("00:00")
