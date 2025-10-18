@@ -3,7 +3,6 @@
 import asyncio
 
 import pytest
-from freezegun import freeze_time
 
 from pomodoro_timer.models.exceptions import SessionAlreadyActive
 from pomodoro_timer.models.session import TimerSession
@@ -18,7 +17,7 @@ class TestTimerEngineInitialization:
         """Test that engine initializes with a session."""
         session = TimerSession()
         engine = TimerEngine(session)
-        
+
         assert engine.session is session
         assert engine._running is False
 
@@ -31,13 +30,13 @@ class TestTimerEngineStartWork:
         """Test that start_work initializes the session."""
         session = TimerSession()
         engine = TimerEngine(session)
-        
+
         # Start and immediately stop to test initialization
         task = asyncio.create_task(engine.start_work())
         await asyncio.sleep(0.2)  # Let it run briefly
         engine._running = False
         await task
-        
+
         assert session.session_type == SessionType.WORK
         assert session.state in (SessionState.RUNNING, SessionState.COMPLETED)
 
@@ -47,7 +46,7 @@ class TestTimerEngineStartWork:
         session = TimerSession()
         session.start_work()
         engine = TimerEngine(session)
-        
+
         with pytest.raises(SessionAlreadyActive):
             await engine.start_work()
 
@@ -60,13 +59,13 @@ class TestTimerEngineStartBreak:
         """Test that start_break initializes the session."""
         session = TimerSession()
         engine = TimerEngine(session)
-        
+
         # Start and immediately stop to test initialization
         task = asyncio.create_task(engine.start_break())
         await asyncio.sleep(0.2)  # Let it run briefly
         engine._running = False
         await task
-        
+
         assert session.session_type == SessionType.BREAK
         assert session.state in (SessionState.RUNNING, SessionState.COMPLETED)
 
@@ -76,7 +75,7 @@ class TestTimerEngineStartBreak:
         session = TimerSession()
         session.start_work()
         engine = TimerEngine(session)
-        
+
         with pytest.raises(SessionAlreadyActive):
             await engine.start_break()
 
@@ -90,9 +89,9 @@ class TestTimerEnginePause:
         session.start_work()
         engine = TimerEngine(session)
         engine._running = True
-        
+
         engine.pause()
-        
+
         assert session.state == SessionState.PAUSED
         assert engine._running is False
 
@@ -107,13 +106,13 @@ class TestTimerEngineResume:
         session.start_work()
         session.pause()
         engine = TimerEngine(session)
-        
+
         # Start resume and immediately stop
         task = asyncio.create_task(engine.resume())
         await asyncio.sleep(0.2)
         engine._running = False
         await task
-        
+
         assert session.state in (SessionState.RUNNING, SessionState.COMPLETED)
 
 
@@ -126,9 +125,9 @@ class TestTimerEngineCancel:
         session.start_work()
         engine = TimerEngine(session)
         engine._running = True
-        
+
         engine.cancel()
-        
+
         assert session.state == SessionState.IDLE
         assert engine._running is False
 
@@ -141,19 +140,19 @@ class TestTimerEngineCountdown:
         """Test that countdown loop updates session time."""
         session = TimerSession()
         engine = TimerEngine(session)
-        
+
         initial_time = 1500  # Full work session
         task = asyncio.create_task(engine.start_work())
-        
+
         # Let it run for a bit
         await asyncio.sleep(0.3)
         engine._running = False
-        
+
         try:
             await asyncio.wait_for(task, timeout=2.0)
         except asyncio.TimeoutError:
             pass
-        
+
         # Time should have decreased from initial
         assert session.remaining_seconds < initial_time
 
@@ -162,21 +161,22 @@ class TestTimerEngineCountdown:
         """Test that countdown completes and notifies when time expires."""
         session = TimerSession()
         engine = TimerEngine(session)
-        
+
         # Start with very short duration (1 second)
         session.session_type = SessionType.WORK
         session.state = SessionState.RUNNING
         session.remaining_seconds = 1
         import time
+
         session.start_time = time.time()
         session.end_time = time.time() + 1
-        
+
         # Run countdown - it should complete within timeout
         try:
             await asyncio.wait_for(engine._run_countdown(), timeout=2.0)
         except asyncio.TimeoutError:
             pass
-        
+
         # Should have completed
         assert session.state == SessionState.COMPLETED
         assert session.remaining_seconds == 0
@@ -186,17 +186,17 @@ class TestTimerEngineCountdown:
         """Test that countdown stops when _running flag is set to False."""
         session = TimerSession()
         engine = TimerEngine(session)
-        
+
         task = asyncio.create_task(engine.start_work())
         await asyncio.sleep(0.2)
-        
+
         # Stop the countdown
         engine._running = False
-        
+
         try:
             await asyncio.wait_for(task, timeout=2.0)
         except asyncio.TimeoutError:
             pass
-        
+
         # Should have stopped without completing
         assert session.state == SessionState.RUNNING
