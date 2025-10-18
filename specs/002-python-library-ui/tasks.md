@@ -4,9 +4,26 @@ description: "Implementation tasks for Python Library-Based UI feature"
 
 # Tasks: Python Library-Based UI
 
-**Status**: 🟢 **Phase 2 (Foundation) COMPLETE - Ready for Phase 3 (UI Components)**  
+**Status**: 🟢 **Phase 2 (Foundation) COMPLETE → Phase 3 (MVP) READY TO START**  
 **Progress**: 18/78 tasks complete (23%) | 182/214 tests passing (85%)  
 **Last Updated**: October 17, 2025
+
+## 🎯 Quick Start: What to Do Next
+
+**You are here**: Foundation complete ✅, ready to build UI components
+
+**Next step**: [Go to pr_review.md](./pr_review.md) for detailed step-by-step implementation guide
+
+**Phase 3 MVP Roadmap** (10-14 hours):
+1. **Configure NiceGUI Testing** (30 min) → Enable UI tests
+2. **Timer Display Component** (3-4 hrs) → Visual countdown
+3. **Control Buttons Component** (3-4 hrs) → Interactive buttons
+4. **Main Page Integration** (2 hrs) → Combine components
+5. **Manual Testing & Polish** (2-3 hrs) → Validate & improve UX
+
+See `pr_review.md` for complete implementation details with code examples.
+
+---
 
 ## Current Status Summary
 
@@ -58,7 +75,7 @@ description: "Implementation tasks for Python Library-Based UI feature"
 - [x] T002 Add tomli-w dependency for TOML writing via `uv add tomli-w` ✅
 - [x] T003 Create UI module directory structure: `src/pomodoro_timer/ui/`, `src/pomodoro_timer/ui/components/`, `src/pomodoro_timer/ui/pages/` ✅
 - [x] T004 Create UI test directory structure: `tests/ui/` for acceptance tests ✅
-- [ ] T005 Configure pytest for NiceGUI in `pytest.ini` (asyncio_mode=auto, add `pytest_plugins = ["nicegui.testing.user_plugin"]`) ⏳ PENDING Phase 3
+- [ ] T005 **[NEXT]** Configure pytest for NiceGUI in `pytest.ini` (asyncio_mode=auto, main_file, addopts=-p nicegui.testing.user_plugin) ⏳ **START HERE**
 - [x] T006 Create `tests/ui/__init__.py` and `tests/ui/conftest.py` with test fixtures ✅
 - [x] T007 [P] Create empty `src/pomodoro_timer/ui/__init__.py` with module docstring ✅
 - [x] T008 [P] Create empty `src/pomodoro_timer/ui/components/__init__.py` ✅
@@ -98,30 +115,118 @@ description: "Implementation tasks for Python Library-Based UI feature"
 
 **Why Combined**: These two P1 stories are tightly coupled - a display without controls or controls without display provides no value. Together they form the Minimum Viable Product (MVP).
 
+**📖 IMPLEMENTATION GUIDE**: See [pr_review.md](./pr_review.md) for detailed step-by-step instructions with code examples
+
 **Independent Test**: Launch UI, click Start Work, verify timer displays 25:00 and counts down every second, click Pause to pause, click Resume to continue, click Cancel to reset to idle. Timer display and controls should work together seamlessly.
+
+### ⚡ Quick Task Overview (See pr_review.md for Details)
+
+**Configuration** (30 min):
+- [ ] T005 **[START HERE]** Update pytest.ini with NiceGUI plugin configuration
+- [ ] Update app.py to support test mode (routes at module level)
+- [ ] Verify: `uv run pytest tests/ui/ --collect-only` succeeds
+
+**Timer Display** (3-4 hrs):
+- [ ] T026 Implement `timer_display()` component with reactive bindings
+- [ ] Run tests: `uv run pytest tests/ui/test_timer_display.py -v`
+- [ ] Fix until 10/10 tests pass
+
+**Control Buttons** (3-4 hrs):
+- [ ] T027 Implement `control_buttons()` with conditional visibility
+- [ ] Run tests: `uv run pytest tests/ui/test_timer_controls.py -v`
+- [ ] Fix until 14/14 tests pass
+
+**Integration** (2 hrs):
+- [ ] T028 Create `main_page()` combining display + controls
+- [ ] T029 Update `app.py` imports and route registration
+- [ ] Run tests: `uv run pytest tests/integration/test_timer_lifecycle.py -v`
+- [ ] Fix until 4/4 tests pass
+
+**Validation** (2-3 hrs):
+- [ ] T030 Manual testing with all scenarios (see pr_review.md)
+- [ ] T031 Visual polish and UX improvements
+- [ ] Run full test suite: `uv run pytest -v`
 
 ### Acceptance Tests for MVP (REQUIRED - Write FIRST, Verify FAIL, Get USER APPROVAL) ⚠️
 
-- [ ] T019 [P] [US1] Write acceptance test for timer display idle state in `tests/ui/test_timer_display.py` - verify shows "00:00", "Idle", and no progress
-- [ ] T020 [P] [US1] Write acceptance test for timer display during work session in `tests/ui/test_timer_display.py` - verify shows "25:00", "Work", "Running" badge, and countdown updates every second
-- [ ] T021 [P] [US1] Write acceptance test for session completion display in `tests/ui/test_timer_display.py` - verify timer reaches "00:00" and updates to show completion
-- [ ] T022 [P] [US2] Write acceptance test for starting work session in `tests/ui/test_timer_controls.py` - verify clicking "Start Work" button starts timer and changes button states
-- [ ] T023 [P] [US2] Write acceptance test for pause/resume in `tests/ui/test_timer_controls.py` - verify clicking Pause stops countdown, Resume continues from same time
-- [ ] T024 [P] [US2] Write acceptance test for cancel action in `tests/ui/test_timer_controls.py` - verify clicking Cancel resets to idle state with "00:00"
-- [ ] T025 [US1] [US2] Write integration test for complete timer lifecycle in `tests/integration/test_timer_lifecycle.py` - start work → pause → resume → complete, verify all state transitions
+- [ ] T019 [P] [US1] Write acceptance test for timer display idle state in `tests/ui/test_timer_display.py` - verify shows "00:00", "Idle", and no progress ✅ EXISTS, NEEDS pytest.ini FIX
+- [ ] T020 [P] [US1] Write acceptance test for timer display during work session in `tests/ui/test_timer_display.py` - verify shows "25:00", "Work", "Running" badge, and countdown updates every second ✅ EXISTS, NEEDS pytest.ini FIX
+- [ ] T021 [P] [US1] Write acceptance test for session completion display in `tests/ui/test_timer_display.py` - verify timer reaches "00:00" and updates to show completion ✅ EXISTS, NEEDS pytest.ini FIX
+- [ ] T022 [P] [US2] Write acceptance test for starting work session in `tests/ui/test_timer_controls.py` - verify clicking "Start Work" button starts timer and changes button states ✅ EXISTS, NEEDS pytest.ini FIX
+- [ ] T023 [P] [US2] Write acceptance test for pause/resume in `tests/ui/test_timer_controls.py` - verify clicking Pause stops countdown, Resume continues from same time ✅ EXISTS, NEEDS pytest.ini FIX
+- [ ] T024 [P] [US2] Write acceptance test for cancel action in `tests/ui/test_timer_controls.py` - verify clicking Cancel resets to idle state with "00:00" ✅ EXISTS, NEEDS pytest.ini FIX
+- [ ] T025 [US1] [US2] Write integration test for complete timer lifecycle in `tests/integration/test_timer_lifecycle.py` - start work → pause → resume → complete, verify all state transitions ✅ EXISTS, NEEDS pytest.ini FIX
 
-**⚠️ STOP**: Verify ALL tests above FAIL appropriately. Get USER APPROVAL that failing tests correctly represent acceptance criteria before proceeding to implementation.
+**⚠️ NOTE**: Tests already exist but can't run until T005 (pytest.ini configuration) is complete.
 
-### Implementation for MVP
+### Implementation for MVP (See pr_review.md for Code Examples)
 
-- [ ] T026 [P] [US1] Implement `timer_display()` component in `src/pomodoro_timer/ui/components/timer_display.py` per contracts (refreshable, shows time/type/progress/state)
-- [ ] T027 [P] [US2] Implement `control_buttons()` component in `src/pomodoro_timer/ui/components/controls.py` per contracts (conditional buttons based on timer state, button disabled/enabled states, async handlers, error handling, hover/active states)
-- [ ] T028 [US1] [US2] Implement `main_content()` and `main_page()` in `src/pomodoro_timer/ui/pages/main.py` combining timer display and controls with 1-second refresh timer
-- [ ] T029 [US1] [US2] Create `run_ui()` function in `src/pomodoro_timer/ui/app.py` to initialize NiceGUI app with main page route and run server on port 8080 (includes test: verify app initialization always resets timer to idle state, ensuring no state persists across restarts per edge case requirement)
-- [ ] T030 [US1] [US2] Update `main()` function in `src/pomodoro_timer/__init__.py` to check for `--ui` flag and call `run_ui()` from ui.app module
+- [ ] T026 [P] [US1] Implement `timer_display()` component in `src/pomodoro_timer/ui/components/timer_display.py` - uses reactive bindings to app_state, shows time/type/progress/state, wrapped with ui.refreshable
+- [ ] T027 [P] [US2] Implement `control_buttons()` component in `src/pomodoro_timer/ui/components/controls.py` - conditional visibility, async handlers, error notifications, loading states
+- [ ] T028 [US1] [US2] Implement `main_page()` in `src/pomodoro_timer/ui/pages/main.py` combining timer display and controls with 1-second refresh timer
+- [ ] T029 [US1] [US2] Update `run_ui()` in `src/pomodoro_timer/ui/app.py` to register routes at module level (required for NiceGUI testing)
+- [ ] T030 [US1] [US2] Update `main()` function in `src/pomodoro_timer/__init__.py` if needed (already checks --ui flag)
 - [ ] T031 [US1] [US2] Add public API exports to `src/pomodoro_timer/ui/__init__.py` (run_ui, AppState, app_state global)
 
 **Checkpoint**: At this point, the MVP should be fully functional - users can launch the UI, see a visual timer, and control it with buttons. Run ALL acceptance tests to verify.
+
+---
+
+## 🚀 Getting Started with Phase 3
+
+### Step 1: Read the Implementation Guide
+Open [pr_review.md](./pr_review.md) which contains:
+- Detailed code examples for each component
+- NiceGUI testing API reference
+- Common patterns and troubleshooting tips
+- Manual testing scenarios
+- Success criteria checklist
+
+### Step 2: Configure Testing (30 minutes)
+Start with task T005:
+```bash
+# Edit pytest.ini
+code pytest.ini
+
+# Add NiceGUI configuration (see pr_review.md Step 1.1)
+# Then verify:
+uv run pytest tests/ui/ --collect-only
+```
+
+### Step 3: Implement Components (8-10 hours)
+Follow pr_review.md Steps 2-4 to build:
+1. Timer Display Component (timer_display.py)
+2. Control Buttons Component (controls.py)
+3. Main Page Integration (main.py)
+
+Run tests after each component:
+```bash
+uv run pytest tests/ui/test_timer_display.py -v
+uv run pytest tests/ui/test_timer_controls.py -v
+uv run pytest tests/integration/test_timer_lifecycle.py -v
+```
+
+### Step 4: Validate & Polish (2-3 hours)
+```bash
+# Launch UI
+uv run pomodoro-timer --ui
+
+# Follow manual test scenarios in pr_review.md Step 5.2
+# Apply visual polish per checklist in pr_review.md Step 5.3
+```
+
+### Step 5: Celebrate! 🎉
+You'll have a fully functional Pomodoro timer web app!
+
+---
+
+## 📚 Documentation Reference
+
+- **[pr_review.md](./pr_review.md)**: 🔥 **START HERE** - Step-by-step implementation guide with code
+- **[spec.md](./spec.md)**: Feature requirements and acceptance criteria
+- **[contracts/ui-components.md](./contracts/ui-components.md)**: API contracts for components
+- **[VALIDATION.md](./VALIDATION.md)**: Current implementation status and test results
+- **[quickstart.md](./quickstart.md)**: Usage instructions for end users
 
 ---
 
