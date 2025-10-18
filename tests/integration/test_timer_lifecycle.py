@@ -120,7 +120,7 @@ class TestCompleteTimerLifecycle:
 
         # Idle → Running (via Start Work button)
         user.find("Start Work").click()
-        await asyncio.sleep(0.1)  # Wait for async handler
+        await asyncio.sleep(1.1)  # Wait for UI refresh timer (1 second)
         assert app_state.is_running
         assert app_state.current_type_display == "Work"
 
@@ -135,7 +135,7 @@ class TestCompleteTimerLifecycle:
 
         # Running → Idle (via Cancel button)
         user.find("Cancel").click()
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(1.1)  # Wait for UI refresh timer (1 second)
         assert app_state.is_idle
         assert app_state.current_time_display == "00:00"
         # Note: Button visibility timing tested separately and by Playwright
