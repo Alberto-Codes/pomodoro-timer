@@ -31,12 +31,12 @@ class TestSettingsForm:
         user.find("Settings").click()
 
         # Verify form displays current values
-        assert user.find("Work Duration").exists()
-        assert user.find("Short Break Duration").exists()
+        assert user.find("Work Duration").exists()  # type: ignore[unresolved-attribute]
+        assert user.find("Short Break Duration").exists()  # type: ignore[unresolved-attribute]
 
         # Check default values displayed
-        work_input = user.find("Work Duration").parent().find("input")
-        break_input = user.find("Short Break Duration").parent().find("input")
+        work_input = user.find("Work Duration").parent().find("input")  # type: ignore[unresolved-attribute]
+        break_input = user.find("Short Break Duration").parent().find("input")  # type: ignore[unresolved-attribute]
 
         assert work_input.value == 25
         assert break_input.value == 5
@@ -55,8 +55,8 @@ class TestSettingsForm:
         user.find("Settings").click()
 
         # Change values
-        work_input = user.find("Work Duration").parent().find("input")
-        break_input = user.find("Short Break Duration").parent().find("input")
+        work_input = user.find("Work Duration").parent().find("input")  # type: ignore[unresolved-attribute]
+        break_input = user.find("Short Break Duration").parent().find("input")  # type: ignore[unresolved-attribute]
 
         work_input.set_value(30)
         break_input.set_value(10)
@@ -65,16 +65,16 @@ class TestSettingsForm:
         user.find("Save").click()
 
         # Verify success notification
-        assert user.find("Settings saved successfully!").exists()
+        assert user.find("Settings saved successfully!").exists()  # type: ignore[unresolved-attribute]
 
         # Start work session and verify new duration
         user.find("Start Work").click()
-        assert user.find("30:00").exists()  # Should show 30 minutes
+        assert user.find("30:00").exists()  # type: ignore[unresolved-attribute]  # Should show 30 minutes
 
         # Cancel and start break
         user.find("Cancel").click()
         user.find("Start Break").click()
-        assert user.find("10:00").exists()  # Should show 10 minutes
+        assert user.find("10:00").exists()  # type: ignore[unresolved-attribute]  # Should show 10 minutes
 
     async def test_settings_validation_prevents_invalid_durations(self, user: User) -> None:
         """Invalid durations show error and disable Save button.
@@ -90,29 +90,29 @@ class TestSettingsForm:
         user.find("Settings").click()
 
         # Try to enter 0 (below minimum)
-        work_input = user.find("Work Duration").parent().find("input")
+        work_input = user.find("Work Duration").parent().find("input")  # type: ignore[unresolved-attribute]
         work_input.set_value(0)
 
         # Verify error message
-        assert user.find("Work duration must be at least").exists()
+        assert user.find("Work duration must be at least").exists()  # type: ignore[unresolved-attribute]
 
         # Verify Save button disabled
         save_button = user.find("Save")
-        assert save_button.props("disable=true")
+        assert save_button.props("disable=true")  # type: ignore[unresolved-attribute]
 
         # Try to enter 1000 (above maximum)
         work_input.set_value(1000)
 
         # Verify error message
-        assert user.find("Work duration must be at most").exists()
-        assert save_button.props("disable=true")
+        assert user.find("Work duration must be at most").exists()  # type: ignore[unresolved-attribute]
+        assert save_button.props("disable=true")  # type: ignore[unresolved-attribute]
 
         # Enter valid value
         work_input.set_value(25)
 
         # Verify error cleared and Save enabled
-        assert not user.find("Work duration must be").exists()
-        assert not save_button.props("disable=true")
+        assert not user.find("Work duration must be").exists()  # type: ignore[unresolved-attribute]
+        assert not save_button.props("disable=true")  # type: ignore[unresolved-attribute]
 
     async def test_settings_persist_across_app_restart(self, user: User) -> None:
         """Settings persist to TOML and load on app restart.
@@ -126,8 +126,8 @@ class TestSettingsForm:
         # Change and save settings
         user.find("Settings").click()
 
-        work_input = user.find("Work Duration").parent().find("input")
-        break_input = user.find("Short Break Duration").parent().find("input")
+        work_input = user.find("Work Duration").parent().find("input")  # type: ignore[unresolved-attribute]
+        break_input = user.find("Short Break Duration").parent().find("input")  # type: ignore[unresolved-attribute]
 
         work_input.set_value(30)
         break_input.set_value(10)
@@ -142,7 +142,7 @@ class TestSettingsForm:
         # Load settings should restore saved values
         # Start work session to verify
         user.find("Start Work").click()
-        assert user.find("30:00").exists()
+        assert user.find("30:00").exists()  # type: ignore[unresolved-attribute]
 
     async def test_settings_cancel_discards_changes(self, user: User) -> None:
         """Cancel button closes dialog without saving changes.
@@ -158,18 +158,18 @@ class TestSettingsForm:
         user.find("Settings").click()
 
         # Change values but don't save
-        work_input = user.find("Work Duration").parent().find("input")
+        work_input = user.find("Work Duration").parent().find("input")  # type: ignore[unresolved-attribute]
         work_input.set_value(40)
 
         # Click Cancel
         user.find("Cancel").click()
 
         # Verify dialog closed
-        assert not user.find("Timer Configuration").exists()
+        assert not user.find("Timer Configuration").exists()  # type: ignore[unresolved-attribute]
 
         # Verify settings unchanged (should still be default 25)
         user.find("Start Work").click()
-        assert user.find("25:00").exists()
+        assert user.find("25:00").exists()  # type: ignore[unresolved-attribute]
 
     async def test_settings_reset_restores_defaults(self, user: User) -> None:
         """Reset button restores default configuration values.
@@ -183,8 +183,8 @@ class TestSettingsForm:
 
         # Change settings first
         user.find("Settings").click()
-        work_input = user.find("Work Duration").parent().find("input")
-        break_input = user.find("Short Break Duration").parent().find("input")
+        work_input = user.find("Work Duration").parent().find("input")  # type: ignore[unresolved-attribute]
+        break_input = user.find("Short Break Duration").parent().find("input")  # type: ignore[unresolved-attribute]
 
         work_input.set_value(30)
         break_input.set_value(10)
@@ -195,7 +195,7 @@ class TestSettingsForm:
         user.find("Reset").click()
 
         # Confirm reset
-        user.find("Reset", index=1).click()  # Second Reset button in confirmation
+        user.find("Reset", index=1).click()  # type: ignore[no-matching-overload]  # Second Reset button in confirmation
 
         # Verify values reset
         assert work_input.value == TimerConfig.DEFAULT_WORK_MINUTES
@@ -204,4 +204,4 @@ class TestSettingsForm:
         # Save and verify
         user.find("Save").click()
         user.find("Start Work").click()
-        assert user.find("25:00").exists()  # Back to default
+        assert user.find("25:00").exists()  # type: ignore[unresolved-attribute]  # Back to default
