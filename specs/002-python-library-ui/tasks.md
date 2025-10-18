@@ -4,15 +4,57 @@ description: "Implementation tasks for Python Library-Based UI feature"
 
 # Tasks: Python Library-Based UI
 
-**Status**: 🎉 **FEATURE COMPLETE - Phases 1-6 Done!**  
-**Progress**: 68/78 tasks complete (87%) | 202/241 tests passing (84%)  
-**Last Updated**: October 17, 2025 - All core functionality complete and validated with Playwright!
+**Status**: ⚠️ **QUALITY ISSUES BLOCKING - Code Quality Fixes Required**  
+**Progress**: 68/78 tasks complete (87%) | 201/255 tests passing (79%)  
+**Last Updated**: October 17, 2025 - Core functionality works but quality gates FAILING
 
-## 🎯 Feature Complete Summary
+## 🚨 CRITICAL: Quality Gates FAILING
 
-**All Phases Implemented**: Phases 1-6 ✅
+**REALITY CHECK** (October 17, 2025 - Full Quality Audit):
 
-**✅ WHAT'S WORKING** (Validated via Manual Testing + Playwright Automation):
+### ❌ Ruff Docstring Check: 27 ERRORS
+```powershell
+uv run ruff check --select D
+# Result: 27 errors found, 12 auto-fixable
+```
+
+**Issues**:
+- Missing docstrings in `tests/__init__.py`, `tests/unit/__init__.py`, `tests/integration/__init__.py` (3 files)
+- Improperly formatted multi-line docstrings in `tests/integration/test_timer_workflows.py` (24 errors)
+
+### ❌ Type Check: 30 ERRORS/WARNINGS
+```powershell
+uv run ty check
+# Result: 28 errors + 2 warnings
+```
+
+**Critical Type Errors**:
+- `src/pomodoro_timer/ui/components/settings.py`: `dialog` typed as `None` but calling `.close()` (2 errors)
+- `tests/ui/test_settings.py`: NiceGUI `User` API type annotations missing (26 errors):
+  - `.exists()` not recognized on `UserInteraction[Element]`
+  - `.parent()` not recognized
+  - `.props()` not recognized
+  - `find()` overload mismatch for `index` parameter
+
+**Warnings**:
+- `tests/unit/test_app_state.py`: possibly-missing-attribute on `SessionType`
+- `tests/unit/test_notifications.py`: possibly-missing-attribute on `stdout`
+
+### ⚠️ Test Results: 201/255 PASSING (79%)
+```powershell
+uv run pytest -v --tb=short
+# Result: 201 passed, 1 failed, 53 errors, 1 warning
+```
+
+**Test Breakdown**:
+- ✅ **201 passing**: All unit/integration tests work
+- ❌ **1 failed**: `test_notify_completion_handles_bell_exception_gracefully` (Windows handle issue)
+- ❌ **14 errors**: Database tests (Windows file locking in teardown - functionality works correctly)
+- ❌ **39 errors**: UI acceptance tests (NiceGUI test server not configured - features work via Playwright)
+
+## 🎯 What Actually Works
+
+**✅ VALIDATED via Playwright Browser Automation** (Manual launch also works):
 ```bash
 uv run pomodoro-timer --ui
 ```
@@ -39,41 +81,119 @@ Opens fully functional web app with:
 - ✅ Screenshots captured: 5 test artifacts generated
 - 📄 Full report: `PLAYWRIGHT_TEST_REPORT.md`
 
-**User Stories Complete**:
-- ✅ US1: Visual Timer Display
-- ✅ US2: Timer Controls
-- ✅ US3: Session History
-- ✅ US4: Configuration UI
+**User Stories Complete** (functionality):
+- ✅ US1: Visual Timer Display (works but has type errors)
+- ✅ US2: Timer Controls (works but has type errors) 
+- ✅ US3: Session History (works correctly)
+- ✅ US4: Configuration UI (works but has type errors)
 
-**Quality Status**:
-- ✅ ruff check: All checks passed!
-- ✅ ruff format: All code formatted!
-- ⚠️ ty check: 2 minor type warnings (non-blocking)
-- ✅ 202/241 tests passing (84%)
-  - All foundational tests passing (100%)
-  - All integration tests passing (100%)
-  - 39 UI tests need NiceGUI test server (manual testing confirms all features work)
+**Quality Status** (BLOCKING):
+- ❌ **ruff check --select D**: 27 docstring errors (12 auto-fixable)
+- ✅ **ruff check**: All non-docstring checks passed
+- ✅ **ruff format**: All code formatted (1 file auto-formatted)
+- ❌ **ty check**: 28 type errors + 2 warnings (ALL MUST BE FIXED)
+- ⚠️ **pytest**: 201/255 passing (79%) - 54 failures/errors need investigation
 
-**Remaining Optional Tasks** (10/78):
-- Performance tests (T075-T078)
-- Responsive design tests (T074)
-- Additional error handling (T065-T066)
-- Extra documentation (T068-T069)
-- Loading spinner tests (T064a)
+## 📋 IMMEDIATE ACTION REQUIRED
 
-**Completed in This Session** (October 17, 2025):
+**Phase 7: Quality Gate Fixes (BLOCKING MERGE)**
+
+### Critical Path (Must Complete Before Merge):
+
+- [ ] **T079** [P] Fix ruff docstring errors (auto-fixable)
+  ```powershell
+  uv run ruff check --select D --fix
+  ```
+  Expected: 12/27 errors auto-fixed
+
+- [ ] **T080** [P] Add missing docstrings to test `__init__.py` files
+  - `tests/__init__.py`
+  - `tests/unit/__init__.py`  
+  - `tests/integration/__init__.py`
+  Required: Google-style docstrings
+
+- [ ] **T081** [P] Fix multi-line docstring formatting in `test_timer_workflows.py`
+  - Convert multi-line BDD-style docstrings to proper Google format
+  - 12 test methods need reformatting
+
+- [ ] **T082** Fix type annotation for `dialog` in `settings.py`
+  - Change `dialog = None` to proper type annotation
+  - Options: `dialog: ui.dialog | None = None` or use `cast()`
+  File: `src/pomodoro_timer/ui/components/settings.py:77,83`
+
+- [ ] **T083** Fix NiceGUI User API type annotations in `test_settings.py`
+  - Add type ignores or update to match actual NiceGUI API
+  - 26 errors related to `.exists()`, `.parent()`, `.props()`, `find(index=)`
+  File: `tests/ui/test_settings.py` (multiple locations)
+
+- [ ] **T084** [P] Fix type warnings in tests
+  - `test_app_state.py:68`: Add null check for `session_type`
+  - `test_notifications.py:71`: Add null check for `sys.__stdout__`
+
+- [ ] **T085** Fix Windows notification test failure
+  - `test_notify_completion_handles_bell_exception_gracefully`
+  - Handle Windows-specific `[WinError 6] The handle is invalid`
+  File: `tests/unit/test_notifications.py:77`
+
+- [ ] **T086** Investigate and fix database test teardown errors (Windows)
+  - 14 tests failing with `PermissionError: [WinError 32]`
+  - Database file locking issue in teardown
+  - Functionality works correctly, just cleanup fails
+  File: `tests/integration/test_session_database.py`
+
+### Optional (Can Defer):
+
+- [ ] **T087** Configure NiceGUI test server for UI acceptance tests
+  - Would enable 39 UI tests to run
+  - Update `pytest.ini` with NiceGUI plugin config
+  - Restructure `app.py` for test compatibility (already done)
+  - Alternative: Keep using Playwright for UI validation (current approach)
+
+- [ ] **T088** Run performance validation tests
+  - UI startup time <2 seconds
+  - Timer update latency <500ms
+  - Config save/apply <1 second
+
+## Remaining Optional Tasks** (10/78 - From Original Plan):
+- T063: Keyboard shortcuts acceptance test
+- T064a: Loading spinner test  
+- T065-T066: Additional error handling
+- T068-T069: Extra documentation
+- T074-T078: Performance and responsive design tests
+
+**Previous Session Completed** (October 17, 2025 - earlier):
 - ✅ Fixed app.py NiceGUI page registration (T005 related)
 - ✅ Fixed keyboard.py key comparison (T061 polish)
 - ✅ Playwright automated testing (comprehensive validation)
 - ✅ Generated test report with 5 screenshots
 
-These are nice-to-have polish items. **Core feature is production-ready!** 🚀
+## 🎬 Current Session Status (October 17, 2025 - Quality Audit)
+
+**Commands Run**:
+```powershell
+uv run ruff check                # ✅ PASSED (non-docstring checks)
+uv run ruff check --select D     # ❌ FAILED - 27 errors
+uv run ruff format               # ✅ 1 file reformatted
+uv run ty check                  # ❌ FAILED - 30 diagnostics
+uv run pytest -v --tb=short      # ⚠️ PARTIAL - 201/255 passing
+uv run pomodoro-timer --ui       # ✅ LAUNCHES (functionality works)
+```
+
+**Findings**:
+- Feature **functionality is complete** and working
+- Code **quality gates are FAILING** and blocking merge
+- Tests have **real issues** (not just "optional enhancements")
+- Type errors are **real violations** (not minor warnings)
+
+**Next Steps**: Complete T079-T086 before declaring feature "complete"
 
 ---
 
-## ⚠️ Known Issue: UI Acceptance Tests Need Configuration
+## ⚠️ Known Issues Detail
 
-**Issue**: 33 UI acceptance tests cannot run due to missing NiceGUI test server configuration.
+### Issue 1: NiceGUI Test Server Configuration
+
+**Issue**: 39 UI acceptance tests cannot run due to missing NiceGUI test server configuration.
 
 **What's Affected**: Tests in `tests/ui/` and `tests/integration/test_timer_lifecycle.py` fail with RuntimeError because they expect NiceGUI test server to be running.
 
@@ -97,9 +217,48 @@ These are nice-to-have polish items. **Core feature is production-ready!** 🚀
 - ✅ Fixed `keyboard.py`: Changed key comparison from `.lower()` to tuple check `in ("w", "W")`
 - ✅ App now launches successfully without RuntimeError
 
-**Future Resolution**: Will require updating `pytest.ini` and `conftest.py` to properly configure NiceGUI test server. This is a test infrastructure issue, not a functionality problem.
+**Future Resolution**: Will require updating `pytest.ini` and `conftest.py` to properly configure NiceGUI test server. This is a test infrastructure issue, not a functionality problem. Tracked in T087 (optional).
 
-**Recommendation**: The feature is production-ready. NiceGUI pytest integration is a nice-to-have for automated testing, but Playwright provides comprehensive validation.
+**Recommendation**: Continue using Playwright for UI validation. NiceGUI pytest integration is optional.
+
+### Issue 2: Type Check Failures (BLOCKING)
+
+**Issue**: 30 type errors/warnings blocking quality gates.
+
+**Impact**: Code fails type checking with ty, violating project's Constitution Principle II (Type Safety & Quality).
+
+**Details**:
+- 2 errors in `settings.py`: `dialog` variable typed as `None`
+- 26 errors in `test_settings.py`: NiceGUI User API type annotations
+- 2 warnings in unit tests: possibly-missing-attribute
+
+**Required Action**: Fix all type errors (T082-T084) before merge.
+
+### Issue 3: Docstring Violations (BLOCKING)
+
+**Issue**: 27 docstring errors violating Google style guide.
+
+**Impact**: Code fails ruff docstring linting, violating project's Constitution Principle II (Quality gates must pass).
+
+**Details**:
+- 3 missing docstrings in test `__init__.py` files
+- 24 improperly formatted docstrings in `test_timer_workflows.py`
+- 12 are auto-fixable via `ruff check --fix`
+
+**Required Action**: Fix all docstring errors (T079-T081) before merge.
+
+### Issue 4: Test Failures (MODERATE)
+
+**Issue**: 54 test failures/errors (1 failed + 53 errors).
+
+**Impact**: Tests not at 100% passing rate.
+
+**Details**:
+- 1 failure: Windows notification test (WinError 6)
+- 14 errors: Database teardown (Windows file locking - functionality works)
+- 39 errors: UI tests (NiceGUI server config - features work via Playwright)
+
+**Required Action**: Fix notification test (T085), investigate database errors (T086).
 
 ---
 
