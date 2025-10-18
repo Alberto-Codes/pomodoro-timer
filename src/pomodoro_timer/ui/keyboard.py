@@ -61,5 +61,5 @@ def setup_keyboard_shortcuts(app_state: AppState) -> None:
     # Register keyboard handlers
     ui.keyboard(on_key=lambda e: handle_space() if e.key == " " and not e.action.repeat else None)
     ui.keyboard(on_key=lambda e: handle_escape() if e.key == "Escape" else None)
-    ui.keyboard(on_key=lambda e: handle_w() if e.key.lower() == "w" else None)
-    ui.keyboard(on_key=lambda e: handle_b() if e.key.lower() == "b" else None)
+    ui.keyboard(on_key=lambda e: handle_w() if str(e.key).lower() == "w" else None)
+    ui.keyboard(on_key=lambda e: handle_b() if str(e.key).lower() == "b" else None)
