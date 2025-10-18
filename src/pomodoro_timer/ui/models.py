@@ -132,6 +132,13 @@ class TimerConfig:
         theme: UI theme ("auto", "light", "dark", default: "auto")
     """
 
+    # Class constants for validation
+    DEFAULT_WORK_MINUTES = DEFAULT_WORK_DURATION
+    DEFAULT_SHORT_BREAK_MINUTES = DEFAULT_SHORT_BREAK_DURATION
+    DEFAULT_LONG_BREAK_MINUTES = DEFAULT_LONG_BREAK_DURATION
+    MIN_DURATION = MIN_DURATION
+    MAX_DURATION = MAX_DURATION
+
     work_duration_minutes: int = DEFAULT_WORK_DURATION
     short_break_minutes: int = DEFAULT_SHORT_BREAK_DURATION
     long_break_minutes: int = DEFAULT_LONG_BREAK_DURATION

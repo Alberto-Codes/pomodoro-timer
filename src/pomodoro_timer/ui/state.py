@@ -315,6 +315,17 @@ class AppState:
         SessionDurations.work_duration_seconds = config.work_duration_minutes * 60
         SessionDurations.break_duration_seconds = config.short_break_minutes * 60
 
+    def reset_config(self) -> None:
+        """Reset configuration to defaults.
+
+        Postconditions:
+            - Config reset to defaults and saved to file
+            - Config applied to SessionType durations
+        """
+        self._config_manager.reset_to_defaults()
+        self._config = TimerConfig.default()
+        self.apply_config(self._config)
+
 
 # Global app state instance
 app_state = AppState()

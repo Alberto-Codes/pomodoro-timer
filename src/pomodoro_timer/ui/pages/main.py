@@ -7,6 +7,7 @@ from nicegui import ui
 
 from pomodoro_timer.ui.components.controls import control_buttons
 from pomodoro_timer.ui.components.history import session_history
+from pomodoro_timer.ui.components.settings import open_settings_dialog
 from pomodoro_timer.ui.components.timer_display import timer_display
 from pomodoro_timer.ui.state import app_state
 
@@ -20,9 +21,10 @@ def main_content() -> None:
     - Session history view
     - Automatic refresh timer (1-second interval)
     """
-    # Header
+    # Header with settings button
     with ui.header().classes("items-center justify-between px-8"):
         ui.label("🍅 Pomodoro Timer").classes("text-2xl font-bold")
+        ui.button("Settings", on_click=open_settings_dialog).props("flat icon=settings")
 
     # Main content area
     with ui.column().classes("items-center justify-center flex-grow gap-8 p-8"):
