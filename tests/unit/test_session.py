@@ -77,6 +77,49 @@ class TestTimerSessionStartWork:
             session.start_work()
 
 
+class TestTimerSessionStartBreak:
+    """Tests for TimerSession.start_break() method."""
+
+    def test_start_break_from_idle_state(self):
+        """Test start_break() transitions from IDLE to RUNNING."""
+        session = TimerSession()
+        session.start_break()
+
+        assert session.state == SessionState.RUNNING
+        assert session.session_type == SessionType.BREAK
+        assert session.remaining_seconds == 300
+        assert session.start_time is not None
+        assert session.end_time is not None
+
+    def test_start_break_sets_correct_end_time(self):
+        """Test start_break() sets end_time to start_time + 300 seconds."""
+        session = TimerSession()
+        start = time.time()
+        session.start_break()
+
+        # Allow small delta for execution time
+        expected_end = start + 300
+        assert session.end_time is not None
+        assert abs(session.end_time - expected_end) < 0.1
+
+    def test_start_break_raises_when_running(self):
+        """Test start_break() raises SessionAlreadyActive when session already running."""
+        session = TimerSession()
+        session.start_break()
+
+        with pytest.raises(SessionAlreadyActive):
+            session.start_break()
+
+    def test_start_break_raises_when_paused(self):
+        """Test start_break() raises SessionAlreadyActive when session is paused."""
+        session = TimerSession()
+        session.start_break()
+        session.pause()
+
+        with pytest.raises(SessionAlreadyActive):
+            session.start_break()
+
+
 class TestTimerSessionTick:
     """Tests for TimerSession.tick() method (T016)."""
 
@@ -109,6 +152,22 @@ class TestTimerSessionTick:
         session.tick()  # Should not raise error
 
         assert session.state == SessionState.IDLE
+
+    def test_tick_does_nothing_when_end_time_is_none(self):
+        """Test tick() does nothing when end_time is None."""
+        session = TimerSession()
+        session.state = SessionState.RUNNING
+        session.session_type = SessionType.WORK
+        session.remaining_seconds = 100
+        session.start_time = time.time()
+        session.end_time = None  # Explicitly set to None
+
+        # Call tick and verify nothing changes
+        session.tick()
+
+        # State should remain RUNNING and time unchanged
+        assert session.state == SessionState.RUNNING
+        assert session.remaining_seconds == 100
 
 
 class TestTimerSessionStateMachine:
