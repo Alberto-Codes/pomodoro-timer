@@ -158,6 +158,30 @@ class TestTimerEngineCountdown:
         assert session.remaining_seconds < initial_time
 
     @pytest.mark.asyncio
+    async def test_countdown_completes_when_time_expires(self):
+        """Test that countdown completes and notifies when time expires."""
+        session = TimerSession()
+        engine = TimerEngine(session)
+        
+        # Start with very short duration (1 second)
+        session.session_type = SessionType.WORK
+        session.state = SessionState.RUNNING
+        session.remaining_seconds = 1
+        import time
+        session.start_time = time.time()
+        session.end_time = time.time() + 1
+        
+        # Run countdown - it should complete within timeout
+        try:
+            await asyncio.wait_for(engine._run_countdown(), timeout=2.0)
+        except asyncio.TimeoutError:
+            pass
+        
+        # Should have completed
+        assert session.state == SessionState.COMPLETED
+        assert session.remaining_seconds == 0
+
+    @pytest.mark.asyncio
     async def test_countdown_stops_when_running_flag_false(self):
         """Test that countdown stops when _running flag is set to False."""
         session = TimerSession()

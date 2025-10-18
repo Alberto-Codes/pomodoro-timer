@@ -195,6 +195,25 @@ class TestHandleResume:
     """Tests for handle_resume() function."""
 
     @pytest.mark.asyncio
+    async def test_handle_resume_success(self):
+        """Test resuming a paused session successfully."""
+        session = TimerSession()
+        session.start_work()
+        session.pause()
+        
+        # Run briefly and stop
+        import asyncio
+        task = asyncio.create_task(handle_resume(session))
+        await asyncio.sleep(0.2)
+        
+        # Cancel to stop the countdown
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+    @pytest.mark.asyncio
     async def test_handle_resume_error_when_not_paused(self, capsys):
         """Test resume returns error when session not paused."""
         session = TimerSession()
@@ -235,6 +254,38 @@ class TestRunCommand:
     """Tests for run_command() function."""
 
     @pytest.mark.asyncio
+    async def test_run_command_start_work(self):
+        """Test running start work command."""
+        args = argparse.Namespace(command="start", session_type="work")
+        
+        # We need to cancel the task since it will run indefinitely
+        import asyncio
+        task = asyncio.create_task(run_command(args))
+        await asyncio.sleep(0.2)
+        task.cancel()
+        
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+    @pytest.mark.asyncio
+    async def test_run_command_start_break(self):
+        """Test running start break command."""
+        args = argparse.Namespace(command="start", session_type="break")
+        
+        # We need to cancel the task since it will run indefinitely
+        import asyncio
+        task = asyncio.create_task(run_command(args))
+        await asyncio.sleep(0.2)
+        task.cancel()
+        
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+    @pytest.mark.asyncio
     async def test_run_command_status(self, capsys):
         """Test running status command."""
         args = argparse.Namespace(command="status")
@@ -251,6 +302,16 @@ class TestRunCommand:
         result = await run_command(args)
         
         # Should return error since no active session
+        assert result == 2
+
+    @pytest.mark.asyncio
+    async def test_run_command_resume(self):
+        """Test running resume command on idle session."""
+        args = argparse.Namespace(command="resume")
+        
+        result = await run_command(args)
+        
+        # Should return error since no paused session
         assert result == 2
 
     @pytest.mark.asyncio
