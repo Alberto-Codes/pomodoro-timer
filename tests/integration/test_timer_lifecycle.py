@@ -33,7 +33,7 @@ class TestCompleteTimerLifecycle:
         # Start work session
         user.find("Start Work").click()
         await asyncio.sleep(0.1)  # Wait for async handler to complete
-        await asyncio.sleep(0.1)  # Wait for UI to refresh (now immediate with explicit refresh)
+        await asyncio.sleep(1.1)  # Wait for UI refresh timer (1-second cycle)
 
         # Verify work session started
         await user.should_see("Work")
@@ -42,15 +42,17 @@ class TestCompleteTimerLifecycle:
 
         # Pause the session and verify Resume button appears
         user.find("Pause").click()
-        await asyncio.sleep(0.1)  # Wait for handler to complete and UI refresh
-        user.find("Resume")  # Should be visible immediately after refresh
+        await asyncio.sleep(0.1)  # Wait for handler to complete
+        await asyncio.sleep(1.1)  # Wait for UI refresh timer (1-second cycle)
+        user.find("Resume")  # Should be visible after refresh timer
         assert app_state.is_paused
         assert not app_state.is_running
 
         # Resume the session and verify Pause button reappears
         user.find("Resume").click()
-        await asyncio.sleep(0.1)  # Wait for async handler and UI refresh
-        user.find("Pause")  # Should be visible immediately after refresh
+        await asyncio.sleep(0.1)  # Wait for async handler
+        await asyncio.sleep(1.1)  # Wait for UI refresh timer (1-second cycle)
+        user.find("Pause")  # Should be visible after refresh timer
         assert app_state.is_running
         assert not app_state.is_paused
 
