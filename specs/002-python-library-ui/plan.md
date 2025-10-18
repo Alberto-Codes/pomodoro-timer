@@ -7,7 +7,7 @@
 
 ## Summary
 
-**Primary Requirement**: Add a modern Python web-based visual interface to the Pomodoro Timer application, allowing users to see timer countdown, control sessions via buttons, view session history, and configure durations.
+**Primary Requirement**: Add a modern Python web-based visual interface to the Pomodoro Timer application, allowing users to see timer countdown, control sessions via buttons, view session history, and configure work/short break durations (long break duration is automatically derived per Pomodoro technique).
 
 **Technical Approach**: Use NiceGUI as the UI framework - a modern, reactive Python library that runs as a local web server. NiceGUI provides built-in `ui.timer` for real-time countdown display, full async/await support for integration with the existing `TimerEngine`, and excellent testing capabilities via the `user` fixture. The UI is implemented as a presentation layer that observes and controls the existing timer engine without duplicating business logic. Session history persisted in SQLite, configuration stored in TOML format.
 
