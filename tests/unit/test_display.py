@@ -46,21 +46,21 @@ class TestDisplayTimer:
     def test_display_timer_work_session(self, capsys):
         """Test displaying a work session timer."""
         display_timer("Work", "25:00", "RUNNING")
-        
+
         captured = capsys.readouterr()
         assert "RUNNING: Work - 25:00" in captured.out
 
     def test_display_timer_break_session(self, capsys):
         """Test displaying a break session timer."""
         display_timer("Break", "05:00", "RUNNING")
-        
+
         captured = capsys.readouterr()
         assert "RUNNING: Break - 05:00" in captured.out
 
     def test_display_timer_paused_state(self, capsys):
         """Test displaying a paused timer."""
         display_timer("Work", "15:30", "PAUSED")
-        
+
         captured = capsys.readouterr()
         assert "PAUSED: Work - 15:30" in captured.out
 
@@ -68,9 +68,9 @@ class TestDisplayTimer:
         """Test that display_timer uses carriage return for in-place updates."""
         output = StringIO()
         monkeypatch.setattr(sys, "stdout", output)
-        
+
         display_timer("Work", "10:00", "RUNNING")
-        
+
         result = output.getvalue()
         assert result.startswith("\r")
         assert "RUNNING: Work - 10:00" in result
@@ -79,19 +79,19 @@ class TestDisplayTimer:
         """Test that display_timer flushes stdout."""
         flush_called = False
         original_write = sys.stdout.write
-        
+
         def mock_write(text):
             original_write(text)
-        
+
         def mock_flush():
             nonlocal flush_called
             flush_called = True
-        
+
         monkeypatch.setattr(sys.stdout, "write", mock_write)
         monkeypatch.setattr(sys.stdout, "flush", mock_flush)
-        
+
         display_timer("Work", "10:00", "RUNNING")
-        
+
         assert flush_called
 
 
@@ -102,9 +102,9 @@ class TestClearLine:
         """Test that clear_line writes spaces to clear the line."""
         output = StringIO()
         monkeypatch.setattr(sys, "stdout", output)
-        
+
         clear_line()
-        
+
         result = output.getvalue()
         assert "\r" in result
         assert " " * 80 in result
@@ -113,9 +113,9 @@ class TestClearLine:
         """Test that clear_line returns cursor to line start."""
         output = StringIO()
         monkeypatch.setattr(sys, "stdout", output)
-        
+
         clear_line()
-        
+
         result = output.getvalue()
         # Should start and end with carriage return
         assert result.startswith("\r")
@@ -125,17 +125,17 @@ class TestClearLine:
         """Test that clear_line flushes stdout."""
         flush_called = False
         original_write = sys.stdout.write
-        
+
         def mock_write(text):
             original_write(text)
-        
+
         def mock_flush():
             nonlocal flush_called
             flush_called = True
-        
+
         monkeypatch.setattr(sys.stdout, "write", mock_write)
         monkeypatch.setattr(sys.stdout, "flush", mock_flush)
-        
+
         clear_line()
-        
+
         assert flush_called

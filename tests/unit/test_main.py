@@ -23,11 +23,11 @@ class TestMain:
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.return_value = 0
-        
+
         # Override sys.exit to prevent actual exit
         with patch("sys.exit") as mock_exit:
             main()
-            
+
             mock_create_parser.assert_called_once()
             mock_parser.parse_args.assert_called_once()
             mock_asyncio_run.assert_called_once()
@@ -47,10 +47,10 @@ class TestMain:
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.return_value = 2  # Error code
-        
+
         with patch("sys.exit") as mock_exit:
             main()
-            
+
             mock_exit.assert_called_once_with(2)
 
     @patch("pomodoro_timer.create_parser")
@@ -64,16 +64,16 @@ class TestMain:
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.side_effect = KeyboardInterrupt()
-        
+
         with patch("sys.exit") as mock_exit:
             with patch("sys.stderr") as mock_stderr:
                 main()
-                
+
                 # Should print interrupt message
-                assert any("Interrupted" in str(c) for c in mock_stderr.write.call_args_list) or any(
-                    "Interrupted" in str(c) for c in getattr(mock_stderr, "mock_calls", [])
-                )
-                
+                assert any(
+                    "Interrupted" in str(c) for c in mock_stderr.write.call_args_list
+                ) or any("Interrupted" in str(c) for c in getattr(mock_stderr, "mock_calls", []))
+
                 # Should exit with code 3
                 mock_exit.assert_called_once_with(3)
 
@@ -90,9 +90,9 @@ class TestMain:
         mock_parser.parse_args.return_value = mock_args
         mock_create_parser.return_value = mock_parser
         mock_asyncio_run.side_effect = KeyboardInterrupt()
-        
+
         with patch("sys.exit"):
             main()
-            
+
             captured = capsys.readouterr()
             assert "Interrupted" in captured.err or "Interrupted" in captured.out

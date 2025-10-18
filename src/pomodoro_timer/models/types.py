@@ -5,7 +5,7 @@ import enum
 
 class SessionDurations:
     """Configurable durations for session types."""
-    
+
     work_duration_seconds: int = 1500  # 25 minutes default
     break_duration_seconds: int = 300  # 5 minutes default
 
