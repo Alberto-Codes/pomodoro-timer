@@ -29,6 +29,7 @@ def control_buttons(state: AppState) -> None:
         """Handle Start Work button click."""
         try:
             await state.start_work()
+            control_buttons.refresh()  # Immediately update UI to show Pause button
             ui.notify("Work session started!", type="positive")
         except SessionAlreadyActive:
             ui.notify("A session is already active", type="warning")
@@ -39,6 +40,7 @@ def control_buttons(state: AppState) -> None:
         """Handle Start Break button click."""
         try:
             await state.start_break()
+            control_buttons.refresh()  # Immediately update UI to show Pause button
             ui.notify("Break session started!", type="positive")
         except SessionAlreadyActive:
             ui.notify("A session is already active", type="warning")
@@ -49,6 +51,7 @@ def control_buttons(state: AppState) -> None:
         """Handle Pause button click."""
         try:
             state.pause()
+            control_buttons.refresh()  # Immediately update UI to show Resume button
             ui.notify("Session paused", type="info")
         except InvalidStateTransition:
             ui.notify("Cannot pause - session not running", type="warning")
@@ -59,6 +62,7 @@ def control_buttons(state: AppState) -> None:
         """Handle Resume button click."""
         try:
             await state.resume()
+            control_buttons.refresh()  # Immediately update UI to show Pause button
             ui.notify("Session resumed", type="positive")
         except InvalidStateTransition:
             ui.notify("Cannot resume - session not paused", type="warning")
@@ -69,6 +73,7 @@ def control_buttons(state: AppState) -> None:
         """Handle Cancel button click."""
         try:
             state.cancel()
+            control_buttons.refresh()  # Immediately update UI to show Start buttons
             ui.notify("Session cancelled", type="info")
         except Exception as e:
             ui.notify(f"Error cancelling session: {e}", type="negative")
