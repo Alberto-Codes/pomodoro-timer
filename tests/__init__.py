@@ -1,0 +1,1 @@
+"""Tests package for Pomodoro Timer application."""
