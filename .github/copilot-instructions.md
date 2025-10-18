@@ -11,6 +11,14 @@ description: Beast Mode Dev
 
 # Commands
 
+## Installing uv
+If uv is not already installed, install it using pip:
+```powershell
+pip install uv                 # Install uv via pip
+uv --version                   # Check if uv is installed and show version
+```
+See [uv installation docs](https://docs.astral.sh/uv/getting-started/installation/) for more installation methods.
+
 ## uv (Package Manager)
 ```powershell
 uv add <package>              # Add production dependency

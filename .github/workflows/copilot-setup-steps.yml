@@ -23,11 +23,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          enable-cache: true
-          # Python version auto-detected from .python-version or pyproject.toml
+          python-version-file: .python-version
+      
+      - name: Install uv
+        run: pip install uv
       
       - name: Sync dependencies with uv
         run: uv sync --dev
