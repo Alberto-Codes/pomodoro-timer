@@ -157,6 +157,6 @@ class TestCompleteTimerLifecycle:
 
         # Running → Idle
         user.find("Cancel").click()
-        await asyncio.sleep(0.1)  # Wait for handler
+        await asyncio.sleep(1.1)  # Wait for handler + UI refresh
         await user.should_see("Idle")
         await user.should_see("00:00")
