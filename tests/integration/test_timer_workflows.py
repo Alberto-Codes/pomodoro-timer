@@ -16,7 +16,7 @@ class TestUserStory1AcceptanceScenarios:
     @pytest.mark.asyncio
     async def test_acceptance_scenario_1_start_work_countdown(self):
         """Test that starting a work session begins 25-minute countdown (T018).
-        
+
         Given the timer is idle,
         When user starts a work session,
         Then the timer begins counting down from 25 minutes.
@@ -43,7 +43,7 @@ class TestUserStory1AcceptanceScenarios:
     @freeze_time("2024-01-01 12:00:00")
     def test_acceptance_scenario_2_notify_on_completion(self):
         """Test that work session completion triggers notification (T019).
-        
+
         Given a work session is running,
         When the timer reaches zero,
         Then the user is notified that the work session is complete.
@@ -61,7 +61,7 @@ class TestUserStory1AcceptanceScenarios:
 
     def test_acceptance_scenario_3_display_remaining_time(self):
         """Test that remaining time is displayed accurately (T020).
-        
+
         Given a work session is running,
         When the user checks the timer,
         Then the remaining time is displayed accurately.
@@ -90,7 +90,7 @@ class TestUserStory2AcceptanceScenarios:
 
     def test_acceptance_scenario_1_start_break_after_work(self):
         """Test that break session starts with 5-minute countdown (T053).
-        
+
         Given a work session just completed,
         When the user starts a break,
         Then the timer begins counting down from 5 minutes.
@@ -113,7 +113,7 @@ class TestUserStory2AcceptanceScenarios:
     @freeze_time("2024-01-01 12:00:00")
     def test_acceptance_scenario_2_notify_break_completion(self):
         """Test that break completion triggers notification (T054).
-        
+
         Given a break is running,
         When the timer reaches zero,
         Then the user is notified that the break is complete.
@@ -130,7 +130,7 @@ class TestUserStory2AcceptanceScenarios:
 
     def test_acceptance_scenario_3_start_work_after_break(self):
         """Test that new work session can start after break (T055).
-        
+
         Given a break just completed,
         When the user is ready,
         Then they can start a new work session.
@@ -183,7 +183,7 @@ class TestUserStory3AcceptanceScenarios:
 
     def test_acceptance_scenario_1_pause_preserves_time(self):
         """Test that pausing preserves remaining time (T075).
-        
+
         Given a timer is running,
         When the user pauses it,
         Then the countdown stops and preserves the remaining time.
@@ -202,7 +202,7 @@ class TestUserStory3AcceptanceScenarios:
 
     def test_acceptance_scenario_2_resume_continues_countdown(self):
         """Test that resume continues countdown from pause point (T076).
-        
+
         Given a timer is paused,
         When the user resumes it,
         Then the countdown continues from where it stopped.
@@ -223,7 +223,7 @@ class TestUserStory3AcceptanceScenarios:
 
     def test_acceptance_scenario_3_display_paused_state(self):
         """Test that paused state is displayed correctly (T077).
-        
+
         Given a timer is paused,
         When the user checks the display,
         Then it shows the paused time and indicates the paused state.
@@ -248,7 +248,7 @@ class TestUserStory4AcceptanceScenarios:
 
     def test_acceptance_scenario_1_cancel_running_or_paused(self):
         """Test that cancel returns timer to idle state (T096).
-        
+
         Given a timer is running or paused,
         When the user cancels it,
         Then the timer stops and returns to idle state.
@@ -271,7 +271,7 @@ class TestUserStory4AcceptanceScenarios:
 
     def test_acceptance_scenario_2_start_fresh_after_cancel(self):
         """Test that new session starts fresh after cancel (T097).
-        
+
         Given the user canceled a session,
         When they start a new session,
         Then it begins fresh from full duration.

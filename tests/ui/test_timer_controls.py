@@ -13,7 +13,6 @@ from nicegui.testing import User
 from pomodoro_timer.models.types import SessionState
 from pomodoro_timer.ui.state import app_state
 
-
 pytestmark = pytest.mark.ui
 
 

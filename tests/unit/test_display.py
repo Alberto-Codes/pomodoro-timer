@@ -3,7 +3,6 @@
 import sys
 from io import StringIO
 
-
 from pomodoro_timer.cli.display import clear_line, display_timer, format_time
 
 

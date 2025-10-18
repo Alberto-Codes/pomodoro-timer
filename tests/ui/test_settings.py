@@ -11,8 +11,6 @@ These tests validate the settings form functionality including:
 import pytest
 from nicegui.testing import User
 
-from pomodoro_timer.ui.models import TimerConfig
-
 
 @pytest.mark.ui
 class TestSettingsForm:
@@ -149,4 +147,3 @@ class TestSettingsForm:
 
         # Verify reset confirmation appears
         await user.should_see("Reset")
-

@@ -13,7 +13,6 @@ from nicegui.testing import User
 from pomodoro_timer.models.types import SessionState
 from pomodoro_timer.ui.state import app_state
 
-
 pytestmark = pytest.mark.ui
 
 
@@ -174,4 +173,4 @@ class TestTimerDisplayRefresh:
         # Start work session
         app_state.session.start_work()
 
-                # Navigate to main page\n        await user.open(\"/\")\n\n        # Wait to verify refresh happens\n        await asyncio.sleep(0.5)\n\n        # This is a placeholder - actual verification depends on implementation\n        assert True
+        # Navigate to main page\n        await user.open(\"/\")\n\n        # Wait to verify refresh happens\n        await asyncio.sleep(0.5)\n\n        # This is a placeholder - actual verification depends on implementation\n        assert True

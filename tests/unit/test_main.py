@@ -2,7 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-
 from pomodoro_timer import main
 
 
