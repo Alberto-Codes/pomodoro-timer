@@ -65,6 +65,7 @@ class TestAppStateComputedProperties:
         app_state.session.start_work()
 
         # Simulate time passing (reduce remaining seconds)
+        assert app_state.session.session_type is not None
         total_seconds = app_state.session.session_type.duration_seconds
         app_state.session.remaining_seconds = total_seconds // 2  # 50% complete
 
