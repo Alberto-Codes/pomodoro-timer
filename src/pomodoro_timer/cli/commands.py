@@ -102,9 +102,62 @@ async def run_command(args: argparse.Namespace) -> int:
         return await handle_start(session, args.session_type)
     elif args.command == "status":
         return handle_status(session)
-    elif args.command in ("pause", "resume", "cancel"):
-        print(f"Error: {args.command} command not yet implemented", file=sys.stderr)
-        return 1
+    elif args.command == "pause":
+        return handle_pause(session)
+    elif args.command == "resume":
+        return await handle_resume(session)
+    elif args.command == "cancel":
+        return handle_cancel(session)
     else:
         print("Error: No command specified. Use --help for usage information.", file=sys.stderr)
         return 1
+
+
+def handle_pause(session: TimerSession) -> int:
+    """Handle pause command.
+
+    Args:
+        session: Timer session instance
+
+    Returns:
+        Exit code (0=success, 2=invalid state)
+    """
+    try:
+        session.pause()
+        print(f"Timer paused at {session.formatted_time}")
+        return 0
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
+
+
+async def handle_resume(session: TimerSession) -> int:
+    """Handle resume command.
+
+    Args:
+        session: Timer session instance
+
+    Returns:
+        Exit code (0=success, 2=invalid state)
+    """
+    try:
+        engine = TimerEngine(session)
+        await engine.resume()
+        return 0
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 2
+
+
+def handle_cancel(session: TimerSession) -> int:
+    """Handle cancel command.
+
+    Args:
+        session: Timer session instance
+
+    Returns:
+        Exit code (0=success)
+    """
+    session.cancel()
+    print("Timer canceled")
+    return 0
