@@ -5,6 +5,8 @@ According to Principle I (Test-First Development), these tests are written
 FIRST and should FAIL until the implementation is complete.
 """
 
+import asyncio
+
 import pytest
 from nicegui.testing import User
 
@@ -33,6 +35,7 @@ class TestStartWorkControl:
 
         # When: Clicking "Start Work" button
         user.find("Start Work").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
 
         # Then: Session is running
         assert app_state.is_running
@@ -72,6 +75,7 @@ class TestStartBreakControl:
 
         # When: Clicking "Start Break" button
         user.find("Start Break").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
 
         # Then: Break session is running
         assert app_state.is_running
@@ -135,6 +139,7 @@ class TestResumeControl:
 
         # When: Clicking Resume button
         user.find("Resume").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
 
         # Then: Session is running again
         assert app_state.is_running
@@ -259,6 +264,7 @@ class TestButtonErrorHandling:
         # Clicking start should trigger async operation
         # (actual loading state verification depends on implementation)
         user.find("Start Work").click()
+        await asyncio.sleep(0.1)  # Wait for async handler to complete
 
         # Verify operation completed
         assert app_state.is_running
