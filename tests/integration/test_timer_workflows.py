@@ -15,9 +15,11 @@ class TestUserStory1AcceptanceScenarios:
 
     @pytest.mark.asyncio
     async def test_acceptance_scenario_1_start_work_countdown(self):
-        """Given the timer is idle,
+        """Test that starting a work session begins 25-minute countdown (T018).
+        
+        Given the timer is idle,
         When user starts a work session,
-        Then the timer begins counting down from 25 minutes (T018).
+        Then the timer begins counting down from 25 minutes.
         """
         session = TimerSession()
         assert session.state == SessionState.IDLE
@@ -40,9 +42,11 @@ class TestUserStory1AcceptanceScenarios:
 
     @freeze_time("2024-01-01 12:00:00")
     def test_acceptance_scenario_2_notify_on_completion(self):
-        """Given a work session is running,
+        """Test that work session completion triggers notification (T019).
+        
+        Given a work session is running,
         When the timer reaches zero,
-        Then the user is notified that the work session is complete (T019).
+        Then the user is notified that the work session is complete.
         """
         session = TimerSession()
         session.start_work()
@@ -56,9 +60,11 @@ class TestUserStory1AcceptanceScenarios:
             assert session.remaining_seconds == 0
 
     def test_acceptance_scenario_3_display_remaining_time(self):
-        """Given a work session is running,
+        """Test that remaining time is displayed accurately (T020).
+        
+        Given a work session is running,
         When the user checks the timer,
-        Then the remaining time is displayed accurately (T020).
+        Then the remaining time is displayed accurately.
         """
         session = TimerSession()
         session.start_work()
@@ -83,9 +89,11 @@ class TestUserStory2AcceptanceScenarios:
     """Integration tests for User Story 2: Take Short Break."""
 
     def test_acceptance_scenario_1_start_break_after_work(self):
-        """Given a work session just completed,
+        """Test that break session starts with 5-minute countdown (T053).
+        
+        Given a work session just completed,
         When the user starts a break,
-        Then the timer begins counting down from 5 minutes (T053).
+        Then the timer begins counting down from 5 minutes.
         """
         session = TimerSession()
 
@@ -104,9 +112,11 @@ class TestUserStory2AcceptanceScenarios:
 
     @freeze_time("2024-01-01 12:00:00")
     def test_acceptance_scenario_2_notify_break_completion(self):
-        """Given a break is running,
+        """Test that break completion triggers notification (T054).
+        
+        Given a break is running,
         When the timer reaches zero,
-        Then the user is notified that the break is complete (T054).
+        Then the user is notified that the break is complete.
         """
         session = TimerSession()
         session.start_break()
@@ -119,9 +129,11 @@ class TestUserStory2AcceptanceScenarios:
             assert session.remaining_seconds == 0
 
     def test_acceptance_scenario_3_start_work_after_break(self):
-        """Given a break just completed,
+        """Test that new work session can start after break (T055).
+        
+        Given a break just completed,
         When the user is ready,
-        Then they can start a new work session (T055).
+        Then they can start a new work session.
         """
         session = TimerSession()
 
@@ -139,8 +151,7 @@ class TestUserStory2AcceptanceScenarios:
         assert session.remaining_seconds == 1500
 
     def test_full_work_break_cycle(self):
-        """Test full work-break cycle: work → complete → break → complete → work (T056).
-        """
+        """Test full work-break cycle: work → complete → break → complete → work (T056)."""
         session = TimerSession()
 
         # Start work
@@ -171,9 +182,11 @@ class TestUserStory3AcceptanceScenarios:
     """Integration tests for User Story 3: Pause and Resume Sessions."""
 
     def test_acceptance_scenario_1_pause_preserves_time(self):
-        """Given a timer is running,
+        """Test that pausing preserves remaining time (T075).
+        
+        Given a timer is running,
         When the user pauses it,
-        Then the countdown stops and preserves the remaining time (T075).
+        Then the countdown stops and preserves the remaining time.
         """
         session = TimerSession()
         session.start_work()
@@ -188,9 +201,11 @@ class TestUserStory3AcceptanceScenarios:
         assert abs(session.remaining_seconds - initial_remaining) <= 1
 
     def test_acceptance_scenario_2_resume_continues_countdown(self):
-        """Given a timer is paused,
+        """Test that resume continues countdown from pause point (T076).
+        
+        Given a timer is paused,
         When the user resumes it,
-        Then the countdown continues from where it stopped (T076).
+        Then the countdown continues from where it stopped.
         """
         session = TimerSession()
         session.start_work()
@@ -207,9 +222,11 @@ class TestUserStory3AcceptanceScenarios:
         assert session.remaining_seconds == paused_time
 
     def test_acceptance_scenario_3_display_paused_state(self):
-        """Given a timer is paused,
+        """Test that paused state is displayed correctly (T077).
+        
+        Given a timer is paused,
         When the user checks the display,
-        Then it shows the paused time and indicates the paused state (T077).
+        Then it shows the paused time and indicates the paused state.
         """
         session = TimerSession()
         session.start_work()
@@ -230,9 +247,11 @@ class TestUserStory4AcceptanceScenarios:
     """Integration tests for User Story 4: Cancel Active Session."""
 
     def test_acceptance_scenario_1_cancel_running_or_paused(self):
-        """Given a timer is running or paused,
+        """Test that cancel returns timer to idle state (T096).
+        
+        Given a timer is running or paused,
         When the user cancels it,
-        Then the timer stops and returns to idle state (T096).
+        Then the timer stops and returns to idle state.
         """
         # Test canceling running session
         session = TimerSession()
@@ -251,9 +270,11 @@ class TestUserStory4AcceptanceScenarios:
         assert session.state == SessionState.IDLE
 
     def test_acceptance_scenario_2_start_fresh_after_cancel(self):
-        """Given the user canceled a session,
+        """Test that new session starts fresh after cancel (T097).
+        
+        Given the user canceled a session,
         When they start a new session,
-        Then it begins fresh from full duration (T097).
+        Then it begins fresh from full duration.
         """
         session = TimerSession()
 
