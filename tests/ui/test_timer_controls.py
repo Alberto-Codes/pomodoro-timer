@@ -32,7 +32,7 @@ class TestStartWorkControl:
         await user.open("/")
 
         # When: Clicking "Start Work" button
-        await user.click("Start Work")
+        user.find("Start Work").click()
 
         # Then: Session is running
         assert app_state.is_running
@@ -71,7 +71,7 @@ class TestStartBreakControl:
         await user.open("/")
 
         # When: Clicking "Start Break" button
-        await user.click("Start Break")
+        user.find("Start Break").click()
 
         # Then: Break session is running
         assert app_state.is_running
@@ -94,7 +94,7 @@ class TestPauseControl:
         await user.open("/")
 
         # When: Clicking Pause button
-        await user.click("Pause")
+        user.find("Pause").click()
 
         # Then: Session is paused
         assert app_state.is_paused
@@ -134,7 +134,7 @@ class TestResumeControl:
         await user.open("/")
 
         # When: Clicking Resume button
-        await user.click("Resume")
+        user.find("Resume").click()
 
         # Then: Session is running again
         assert app_state.is_running
@@ -173,7 +173,7 @@ class TestCancelControl:
         await user.open("/")
 
         # When: Clicking Cancel button
-        await user.click("Cancel")
+        user.find("Cancel").click()
 
         # Then: Session is idle
         assert app_state.is_idle
