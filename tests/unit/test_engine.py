@@ -3,7 +3,6 @@
 import asyncio
 
 import pytest
-from freezegun import freeze_time
 
 from pomodoro_timer.models.exceptions import SessionAlreadyActive
 from pomodoro_timer.models.session import TimerSession

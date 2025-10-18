@@ -9,7 +9,7 @@ from datetime import datetime
 from nicegui import observables
 
 from pomodoro_timer.models.session import TimerSession
-from pomodoro_timer.models.types import SessionState
+from pomodoro_timer.models.types import SessionDurations, SessionState
 from pomodoro_timer.timer.engine import TimerEngine
 from pomodoro_timer.ui.config import ConfigManager
 from pomodoro_timer.ui.database import SessionDatabase
@@ -309,14 +309,11 @@ class AppState:
             config: The TimerConfig to apply
 
         Note:
-            This modifies the SessionType enum's duration_seconds property.
-            Since SessionType is an enum, we can't directly modify it,
-            so this would require a different approach in the actual implementation.
-            For now, this is a placeholder for the contract.
+            This modifies the SessionDurations class attributes.
         """
-        # TODO: Implement dynamic duration update mechanism
-        # This may require refactoring SessionType to support dynamic durations
-        pass
+        # Update SessionDurations from config
+        SessionDurations.work_duration_seconds = config.work_duration_minutes * 60
+        SessionDurations.break_duration_seconds = config.short_break_minutes * 60
 
 
 # Global app state instance

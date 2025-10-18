@@ -1,7 +1,6 @@
 """Unit tests for CLI command handlers."""
 
 import argparse
-from io import StringIO
 
 import pytest
 

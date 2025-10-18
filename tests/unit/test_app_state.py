@@ -1,6 +1,5 @@
 """Unit tests for AppState class."""
 
-import pytest
 
 from pomodoro_timer.models.types import SessionState, SessionType
 from pomodoro_timer.ui.state import AppState

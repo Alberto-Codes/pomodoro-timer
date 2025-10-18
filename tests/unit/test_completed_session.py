@@ -1,7 +1,7 @@
 """Unit tests for CompletedSession model."""
 
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pytest
 

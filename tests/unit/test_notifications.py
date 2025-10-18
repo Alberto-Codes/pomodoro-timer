@@ -51,7 +51,6 @@ class TestNotifyCompletion:
     def test_notify_completion_flushes_output_after_bell(self, monkeypatch):
         """Test that notification flushes stdout after bell."""
         flush_called = False
-        original_write = sys.stdout.write
         
         def mock_flush():
             nonlocal flush_called

@@ -57,7 +57,7 @@ class TestSessionPersistence:
             duration_seconds=300
         )
         
-        session_id = temp_database.insert(completed)
+        temp_database.insert(completed)
         sessions = temp_database.query_all()
         
         # Assert

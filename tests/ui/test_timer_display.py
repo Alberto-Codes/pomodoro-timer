@@ -8,7 +8,7 @@ FIRST and should FAIL until the implementation is complete.
 import pytest
 from nicegui.testing import User
 
-from pomodoro_timer.models.types import SessionState, SessionType
+from pomodoro_timer.models.types import SessionState
 from pomodoro_timer.ui.state import app_state
 
 

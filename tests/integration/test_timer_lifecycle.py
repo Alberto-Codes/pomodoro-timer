@@ -3,7 +3,6 @@
 This test verifies the complete timer workflow integrating display and controls.
 """
 
-import asyncio
 
 import pytest
 from nicegui.testing import User

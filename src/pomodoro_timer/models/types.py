@@ -3,6 +3,13 @@
 import enum
 
 
+class SessionDurations:
+    """Configurable durations for session types."""
+    
+    work_duration_seconds: int = 1500  # 25 minutes default
+    break_duration_seconds: int = 300  # 5 minutes default
+
+
 class SessionType(enum.Enum):
     """Types of Pomodoro timer sessions."""
 
@@ -14,9 +21,12 @@ class SessionType(enum.Enum):
         """Get the duration in seconds for this session type.
 
         Returns:
-            1500 for WORK (25 minutes), 300 for BREAK (5 minutes)
+            Configured duration from SessionDurations
         """
-        return 1500 if self == SessionType.WORK else 300
+        if self == SessionType.WORK:
+            return SessionDurations.work_duration_seconds
+        else:
+            return SessionDurations.break_duration_seconds
 
     @property
     def display_name(self) -> str:

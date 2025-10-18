@@ -1,9 +1,7 @@
 """Unit tests for main application entry point."""
 
-import sys
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
-import pytest
 
 from pomodoro_timer import main
 
@@ -72,8 +70,9 @@ class TestMain:
                 main()
                 
                 # Should print interrupt message
-                assert any("Interrupted" in str(call) for call in mock_stderr.write.call_args_list 
-                          or "Interrupted" in str(call) for call in getattr(mock_stderr, 'mock_calls', []))
+                assert any("Interrupted" in str(c) for c in mock_stderr.write.call_args_list) or any(
+                    "Interrupted" in str(c) for c in getattr(mock_stderr, "mock_calls", [])
+                )
                 
                 # Should exit with code 3
                 mock_exit.assert_called_once_with(3)
