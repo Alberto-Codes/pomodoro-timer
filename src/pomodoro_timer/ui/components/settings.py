@@ -74,12 +74,14 @@ def settings_form() -> None:
             app_state.save_config(new_config)
 
             ui.notify("Settings saved successfully!", type="positive")
+            assert dialog is not None
             dialog.close()
         except ValueError as e:
             ui.notify(f"Error saving settings: {e}", type="negative")
 
     def cancel_settings():
         """Close dialog without saving."""
+        assert dialog is not None
         dialog.close()
 
     async def reset_settings():
@@ -173,7 +175,7 @@ def settings_form() -> None:
 
 
 # Module-level dialog reference for opening from main page
-dialog = None
+dialog: ui.dialog | None = None
 
 
 def open_settings_dialog():
