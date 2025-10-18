@@ -1,7 +1,5 @@
 """Unit tests for SessionType and SessionState enums."""
 
-import pytest
-
 from pomodoro_timer.models.types import SessionState, SessionType
 
 

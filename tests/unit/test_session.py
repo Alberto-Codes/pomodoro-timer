@@ -56,6 +56,7 @@ class TestTimerSessionStartWork:
 
         # Allow small delta for execution time
         expected_end = start + 1500
+        assert session.end_time is not None
         assert abs(session.end_time - expected_end) < 0.1
 
     def test_start_work_raises_when_running(self):

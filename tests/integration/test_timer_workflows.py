@@ -186,14 +186,14 @@ class TestUserStory3AcceptanceScenarios:
         session = TimerSession()
         session.start_work()
 
-        # Simulate 5 seconds passing
-        initial_remaining = 1495
-        session.remaining_seconds = initial_remaining
+        # Get initial remaining time
+        initial_remaining = session.remaining_seconds
 
         session.pause()
 
         assert session.state == SessionState.PAUSED
-        assert session.remaining_seconds == initial_remaining
+        # Time should be approximately preserved (within 1 second due to execution time)
+        assert abs(session.remaining_seconds - initial_remaining) <= 1
 
     def test_acceptance_scenario_2_resume_continues_countdown(self):
         """
@@ -224,11 +224,15 @@ class TestUserStory3AcceptanceScenarios:
         session = TimerSession()
         session.start_work()
 
-        session.remaining_seconds = 900  # 15 minutes
+        # Simulate time passing by adjusting end_time
+        session.end_time = time.time() + 900  # 15 minutes remaining
+        session.tick()  # Update remaining_seconds
+
         session.pause()
 
         assert session.state == SessionState.PAUSED
-        assert session.formatted_time == "15:00"
+        # Should be approximately 15:00 (allow 1 second variance for execution time)
+        assert session.formatted_time in ["14:59", "15:00"]
         assert session.state.display_name == "PAUSED"
 
 
