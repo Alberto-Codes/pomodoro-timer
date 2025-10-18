@@ -281,14 +281,14 @@ class TimerEngine:
 
 ```mermaid
 flowchart TD
-    Start[Start Loop] --> Check{Session<br/>RUNNING?}
+    Start[Start Loop] --> Check{"Session RUNNING?"}
     Check -->|No| Exit[Exit Loop]
-    Check -->|Yes| Tick[Call session.tick()]
-    Tick --> Changed{State changed<br/>to COMPLETED?}
+    Check -->|Yes| Tick[Call session.tick]
+    Tick --> Changed{"State changed to COMPLETED?"}
     Changed -->|Yes| Notify[Trigger notification]
     Notify --> Display[Update display]
     Changed -->|No| Display
-    Display --> Sleep[await asyncio.sleep(0.1)]
+    Display --> Sleep["await asyncio.sleep(0.1)"]
     Sleep --> Check
     
     style Notify fill:#ffeb3b
