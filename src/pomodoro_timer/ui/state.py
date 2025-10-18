@@ -157,7 +157,13 @@ class AppState:
             - session.session_type == SessionType.WORK
             - session.remaining_seconds == work_duration * 60
         """
-        await self._engine.start_work()
+        import asyncio
+
+        # Start session state (validates not already active)
+        self._session.start_work()
+        # Set engine running flag and run countdown in background (non-blocking for UI)
+        self._engine._running = True
+        asyncio.create_task(self._engine._run_countdown())
 
     async def start_break(self) -> None:
         """Start a new break session.
@@ -170,7 +176,13 @@ class AppState:
             - session.session_type == SessionType.BREAK
             - session.remaining_seconds == break_duration * 60
         """
-        await self._engine.start_break()
+        import asyncio
+
+        # Start session state (validates not already active)
+        self._session.start_break()
+        # Set engine running flag and run countdown in background (non-blocking for UI)
+        self._engine._running = True
+        asyncio.create_task(self._engine._run_countdown())
 
     def pause(self) -> None:
         """Pause the currently running session.
@@ -194,7 +206,13 @@ class AppState:
             - session.state == SessionState.RUNNING
             - Countdown continues from paused time
         """
-        await self._engine.resume()
+        import asyncio
+
+        # Resume session state (validates currently paused)
+        self._session.resume()
+        # Set engine running flag and run countdown in background (non-blocking for UI)
+        self._engine._running = True
+        asyncio.create_task(self._engine._run_countdown())
 
     def cancel(self) -> None:
         """Cancel the current session and return to idle.
