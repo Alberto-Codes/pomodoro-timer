@@ -19,7 +19,7 @@ Users can see a visual representation of the Pomodoro timer running in an intera
 
 1. **Given** the UI is launched, **When** a user views the main screen, **Then** they see the current timer state (idle/running), session type, and time remaining displayed prominently
 2. **Given** a Pomodoro session is running, **When** time elapses, **Then** the displayed time updates every second showing remaining time accurately
-3. **Given** a session completes, **When** the timer reaches zero, **Then** the display updates to show the session is complete and the next session type
+3. **Given** a session completes, **When** the timer reaches zero, **Then** the display updates to show "Completed" state and the timer resets to idle (waiting for user to manually start the next session - no auto-advance)
 
 ---
 
@@ -88,22 +88,22 @@ Users can configure timer durations for work sessions, short breaks, and long br
 - **FR-002**: System MUST display the current session type (Work, Short Break, Long Break)
 - **FR-003**: System MUST provide interactive buttons for Start, Pause, Resume, and Cancel actions
 - **FR-004**: System MUST update the timer display every second while a session is running
-- **FR-005**: System MUST provide visual feedback when timer controls are clicked (button shows disabled/enabled states, loading spinner for async operations)
+- **FR-005**: System MUST provide visual feedback when timer controls are clicked (buttons show disabled state when action is unavailable, enabled state when clickable, loading spinner appears during async operations, hover/active states for interactive elements)
 - **FR-006**: System MUST display session progress as a percentage or progress indicator
 - **FR-007**: System MUST show a history view listing completed sessions with timestamps
 - **FR-008**: System MUST allow users to configure work session duration (default: 25 minutes)
 - **FR-009**: System MUST allow users to configure short break duration (default: 5 minutes)
-- **FR-010**: System MUST allow users to configure long break duration (default: 15 minutes)
+- **FR-010**: System MUST display long break duration (default: 15 minutes, automatically derived per Pomodoro technique: 4x work sessions = 1 long break)
 - **FR-011**: System MUST persist user settings between application restarts
 - **FR-012**: System MUST provide clear visual distinction between idle, running, and paused states
-- **FR-013**: System MUST handle window resize gracefully, maintaining usability at different sizes (minimum 800x600, all controls accessible without horizontal scrolling)
+- **FR-013**: System MUST handle window resize gracefully, maintaining usability at different sizes (minimum 800x600: all buttons visible and clickable, timer text readable with minimum 14px font size, no horizontal scrolling required, responsive layout adapts to available space)
 - **FR-014**: System MUST integrate with the existing CLI timer engine without duplicating logic
 - **FR-015**: System MUST provide keyboard shortcuts for common actions (start/pause/stop)
 
 ### Key Entities
 
 - **Timer State**: Represents the current operational state (idle, running, paused, completed) and associated session information (type, remaining time, start time)
-- **Session**: Represents a completed Pomodoro work or break period with start time, end time, duration, and type
+- **CompletedSession**: Represents a completed Pomodoro work or break period with start time, end time, duration, and session type (matches data model naming)
 - **User Settings**: Represents user-configurable preferences including work duration, short break duration, long break duration, and UI preferences
 - **Display Component**: Represents the visual elements showing timer information (time display, progress indicator, session type label, control buttons)
 
