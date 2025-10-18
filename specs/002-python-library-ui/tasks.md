@@ -87,9 +87,9 @@ description: "Implementation tasks for Python Library-Based UI feature"
 ### Implementation for MVP
 
 - [ ] T026 [P] [US1] Implement `timer_display()` component in `src/pomodoro_timer/ui/components/timer_display.py` per contracts (refreshable, shows time/type/progress/state)
-- [ ] T027 [P] [US2] Implement `control_buttons()` component in `src/pomodoro_timer/ui/components/controls.py` per contracts (conditional buttons, async handlers, error handling)
+- [ ] T027 [P] [US2] Implement `control_buttons()` component in `src/pomodoro_timer/ui/components/controls.py` per contracts (conditional buttons based on timer state, button disabled/enabled states, async handlers, error handling, hover/active states)
 - [ ] T028 [US1] [US2] Implement `main_content()` and `main_page()` in `src/pomodoro_timer/ui/pages/main.py` combining timer display and controls with 1-second refresh timer
-- [ ] T029 [US1] [US2] Create `run_ui()` function in `src/pomodoro_timer/ui/app.py` to initialize NiceGUI app with main page route and run server on port 8080
+- [ ] T029 [US1] [US2] Create `run_ui()` function in `src/pomodoro_timer/ui/app.py` to initialize NiceGUI app with main page route and run server on port 8080 (includes test: verify app initialization always resets timer to idle state, ensuring no state persists across restarts per edge case requirement)
 - [ ] T030 [US1] [US2] Update `main()` function in `src/pomodoro_timer/__init__.py` to check for `--ui` flag and call `run_ui()` from ui.app module
 - [ ] T031 [US1] [US2] Add public API exports to `src/pomodoro_timer/ui/__init__.py` (run_ui, AppState, app_state global)
 
@@ -139,7 +139,7 @@ description: "Implementation tasks for Python Library-Based UI feature"
 - [ ] T045 [P] [US4] Write integration test for config persistence in `tests/integration/test_config_persistence.py` - save config to TOML, restart, load config, verify values match
 - [ ] T046 [P] [US4] Write integration test for config validation in `tests/integration/test_config_persistence.py` - attempt to save invalid durations (0, negative, >999), verify rejection with appropriate errors
 - [ ] T047 [P] [US4] Write integration test for config application in `tests/integration/test_config_persistence.py` - change config, verify SessionType enum values updated, start session, verify uses new duration
-- [ ] T048 [US4] Write acceptance test for settings form in `tests/ui/test_settings.py` - open settings, verify form shows current values for work and short break durations, long break duration displayed (read-only, derived automatically per Pomodoro technique)
+- [ ] T048 [US4] Write acceptance test for settings form in `tests/ui/test_settings.py` - open settings, verify form shows current values for work duration and short break duration (editable number inputs), long break duration displayed as informational text (read-only, automatically derived at 15 minutes per Pomodoro technique)
 - [ ] T049 [US4] Write acceptance test for settings save in `tests/ui/test_settings.py` - modify work and short break durations, click Save, verify success notification, start new session, verify uses new duration
 - [ ] T050 [US4] Write acceptance test for settings validation in `tests/ui/test_settings.py` - enter invalid duration (e.g., 0), verify Save button disabled and error message shown
 - [ ] T051 [US4] Write acceptance test for settings persistence in `tests/ui/test_settings.py` - change settings, close and reopen app, verify settings retained
@@ -175,9 +175,10 @@ description: "Implementation tasks for Python Library-Based UI feature"
 ### Notifications & UX Enhancements
 
 - [ ] T064 [P] Add session completion notification in timer display component - show toast/notification when session completes using `ui.notify()`
+- [ ] T064a [P] Write acceptance test for loading spinner in `tests/ui/test_timer_controls.py` - verify loading spinner appears during async operations (start_work, start_break, resume) and disappears when operation completes
 - [ ] T065 [P] Add error handling for session state transitions - catch InvalidStateTransition and SessionAlreadyActive, show user-friendly notifications
 - [ ] T066 [P] Add loading state indicators for async operations (start_work, start_break, resume) to provide visual feedback during state changes
-- [ ] T074 [P] Add responsive design CSS/layout to timer display and controls ensuring UI remains usable at 800x600 minimum window size without horizontal scrolling
+- [ ] T074 [P] Add responsive design CSS/layout to timer display and controls ensuring: all buttons visible and clickable at 800x600, timer text minimum 14px font size, no horizontal scrolling required, layout adapts to available space. Write acceptance test in `tests/ui/test_responsive_design.py` to verify behavior at 800x600, 1024x768, and 1920x1080 resolutions.
 
 ### Documentation & Validation
 
