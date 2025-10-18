@@ -9,6 +9,7 @@ from pomodoro_timer.models.exceptions import InvalidStateTransition, SessionAlre
 from pomodoro_timer.ui.state import AppState
 
 
+@ui.refreshable
 def control_buttons(state: AppState) -> None:
     """Display timer control buttons.
 
