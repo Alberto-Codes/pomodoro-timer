@@ -12,14 +12,14 @@ from pomodoro_timer.ui.models import CompletedSession
 
 class SessionDatabase:
     """Manages SQLite database for session history.
-    
+
     Attributes:
         db_path: Path to the SQLite database file
     """
-    
+
     def __init__(self, db_path: Path | None = None) -> None:
         """Initialize database connection.
-        
+
         Args:
             db_path: Path to database file. If None, uses default location:
                      ~/.local/share/pomodoro-timer/sessions.db
@@ -29,10 +29,10 @@ class SessionDatabase:
             data_dir = Path.home() / ".local" / "share" / "pomodoro-timer"
             data_dir.mkdir(parents=True, exist_ok=True)
             db_path = data_dir / "sessions.db"
-        
+
         self.db_path = db_path
         self._initialize_schema()
-    
+
     def _initialize_schema(self) -> None:
         """Create database schema if it doesn't exist."""
         with sqlite3.connect(self.db_path) as conn:
@@ -46,7 +46,7 @@ class SessionDatabase:
                     created_at REAL DEFAULT (strftime('%s', 'now'))
                 )
             """)
-            
+
             # Create indexes for efficient querying
             conn.execute("""
                 CREATE INDEX IF NOT EXISTS idx_session_type 
@@ -61,13 +61,13 @@ class SessionDatabase:
                 ON sessions(start_time DESC)
             """)
             conn.commit()
-    
+
     def insert(self, session: CompletedSession) -> int:
         """Insert a completed session into the database.
-        
+
         Args:
             session: The completed session to save
-            
+
         Returns:
             Database ID of the inserted session
         """
@@ -85,15 +85,16 @@ class SessionDatabase:
                 ),
             )
             conn.commit()
-            return cursor.lastrowid
-    
+            # lastrowid is guaranteed to be an int for successful inserts
+            return cursor.lastrowid if cursor.lastrowid is not None else 0
+
     def query_all(self, limit: int = 100, offset: int = 0) -> list[CompletedSession]:
         """Query all sessions ordered by start time (most recent first).
-        
+
         Args:
             limit: Maximum number of sessions to return (default: 100)
             offset: Number of sessions to skip (for pagination, default: 0)
-            
+
         Returns:
             List of CompletedSession objects
         """
@@ -109,20 +110,20 @@ class SessionDatabase:
                 (limit, offset),
             )
             return [CompletedSession.from_db_row(row) for row in cursor.fetchall()]
-    
+
     def query_by_date(self, date: datetime) -> list[CompletedSession]:
         """Query sessions for a specific date.
-        
+
         Args:
             date: Date to query sessions for
-            
+
         Returns:
             List of CompletedSession objects for that date
         """
         # Get start and end timestamps for the date
         start_of_day = datetime(date.year, date.month, date.day, 0, 0, 0)
         end_of_day = datetime(date.year, date.month, date.day, 23, 59, 59)
-        
+
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
@@ -135,16 +136,16 @@ class SessionDatabase:
                 (start_of_day.timestamp(), end_of_day.timestamp()),
             )
             return [CompletedSession.from_db_row(row) for row in cursor.fetchall()]
-    
+
     def delete_all(self) -> None:
         """Delete all sessions from the database."""
         with sqlite3.connect(self.db_path) as conn:
             conn.execute("DELETE FROM sessions")
             conn.commit()
-    
+
     def count(self) -> int:
         """Count total number of sessions in database.
-        
+
         Returns:
             Total session count
         """

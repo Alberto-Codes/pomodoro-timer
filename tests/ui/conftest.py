@@ -5,12 +5,23 @@ The user fixture is automatically provided by the NiceGUI testing plugin.
 """
 
 import pytest
+from nicegui import ui
+
+from pomodoro_timer.models.types import SessionState
+from pomodoro_timer.ui.pages.main import main_page
+from pomodoro_timer.ui.state import app_state
 
 
-# Configure NiceGUI testing to use our app
-@pytest.fixture(scope="session", autouse=True)
-def nicegui_config():
-    """Configure NiceGUI testing."""
-    from nicegui import app
-    # Import to ensure app routes are registered
-    import pomodoro_timer.ui.app  # noqa: F401
+@pytest.fixture(scope="function", autouse=True)
+def reset_app_state():
+    """Reset app state before each test."""
+    if app_state.session.state != SessionState.IDLE:
+        app_state.cancel()
+    yield
+    # Clean up after test
+    if app_state.session.state != SessionState.IDLE:
+        app_state.cancel()
+
+
+# Register the main page route for NiceGUI testing
+ui.page("/")(main_page)

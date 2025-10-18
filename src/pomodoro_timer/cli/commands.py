@@ -17,6 +17,13 @@ def create_parser() -> argparse.ArgumentParser:
         prog="pomodoro-timer",
         description="CLI Pomodoro timer with 25-minute work sessions and 5-minute breaks",
     )
+    
+    # Add --ui flag for launching web interface
+    parser.add_argument(
+        "--ui",
+        action="store_true",
+        help="Launch web-based UI instead of CLI",
+    )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
