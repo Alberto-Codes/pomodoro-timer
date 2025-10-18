@@ -38,11 +38,28 @@ def main_content() -> None:
         # Session history
         session_history()
 
-    # Auto-refresh timer display every 1 second
-    ui.timer(1.0, lambda: timer_display.refresh())
+    # Auto-refresh timer display every 1 second (with error handling for test cleanup)
+    def safe_refresh_display():
+        try:
+            timer_display.refresh()
+        except RuntimeError:
+            pass  # Client deleted during cleanup
 
-    # Check for session completion every second
-    ui.timer(1.0, lambda: app_state.check_and_record_completion())
+    def safe_refresh_controls():
+        try:
+            control_buttons.refresh()
+        except RuntimeError:
+            pass  # Client deleted during cleanup
+
+    def safe_check_completion():
+        try:
+            app_state.check_and_record_completion()
+        except RuntimeError:
+            pass  # Client deleted during cleanup
+
+    ui.timer(1.0, safe_refresh_display)
+    ui.timer(1.0, safe_refresh_controls)
+    ui.timer(1.0, safe_check_completion)
 
 
 def main_page() -> None:
